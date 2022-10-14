@@ -9,14 +9,12 @@ displaying_range = 1000
 
 def createClearSignal():
     signaData=pd.DataFrame(signal_data)
-
     return signaData[:displaying_range]
 
 
 def createNoisySignal(signalToNoiseRatio):
     noise = np.random.normal(0,signalToNoiseRatio,len(signal_data))
     noisy_signal = signal_data + noise
-
     noisy_data=pd.DataFrame(noisy_signal)
     return noisy_data[:displaying_range]
 

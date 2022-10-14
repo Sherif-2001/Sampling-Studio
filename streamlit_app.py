@@ -8,7 +8,7 @@ with open('style.css') as f:
     
 st.sidebar.header('Sampling Studio')
 
-st.sidebar.subheader('Opend Shart')
+st.sidebar.subheader('Opened Chart')
 # time_hist_color = st.sidebar.selectbox('Color by') 
 
 st.sidebar.subheader('Created Sine Wave')
@@ -43,8 +43,3 @@ st.line_chart(generated_sine)
 st.write("""### Resulted Signal""")
 result_signal = createAddedSignals(sine_amplitude, sine_frequancy)
 st.line_chart(result_signal)
-
-
-
-
-
