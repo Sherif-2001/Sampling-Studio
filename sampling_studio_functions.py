@@ -1,15 +1,18 @@
 import numpy as np
-import matplotlib.pyplot as plt
-import streamlit as st
 import pandas as pd
 
-signal_data = pd.read_csv("ecg_data.csv")
+
+display_range=1000
+
+
+signal_data = pd.read_csv("ecg_data.csv")[:display_range]
 signal_time = signal_data["Time"]
 signal_amplitude = signal_data["Amplitude"]
 maximum_frequency = np.fft.fft(signal_data).max()
 sampling_frequency = 2 * maximum_frequency
 
-noisy_data = pd.read_csv("ecg_data.csv")
+
+noisy_data = pd.read_csv("ecg_data.csv")[:display_range]
 
 
 def generateClearSignal():
@@ -37,8 +40,12 @@ def addSignals(amplitude, frequency,noise_flag,noise_ratio = 0.0001):
         signal_copy["Amplitude"] += sineWave
     return signal_copy
 
-def generateSampledSignal():
-    fs = 35
+def generateSampledSignal(freq):
+    fs = freq
     Ts = 1/fs
-    # sig = signal_data.loc[signal_data['Time'][i] % Ts == 0 for i in range(len(signal_data))]
-    # plt.plot(sig)
+    sig = signal_data[:-1:round(Ts*1000)]
+    print(fs)
+    return sig
+    
+
+
