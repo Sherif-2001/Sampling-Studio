@@ -1,5 +1,5 @@
 import streamlit as st
-from sampling_studio_functions import createClearSignal, createNoisySignal, createSineWave, createAddedSignals
+from sampling_studio_functions import createClearSignal, createNoisySignal, generateSineWave, createAddedSignals
 
 st.set_page_config(layout='wide', initial_sidebar_state='expanded')
 
@@ -36,7 +36,7 @@ else:
     st.line_chart(signal)
 
 st.write("""### Generated Sine Wave""")
-generated_sine = createSineWave(sine_amplitude, sine_frequancy)
+generated_sine = generateSineWave(sine_amplitude, sine_frequancy)
 st.line_chart(generated_sine)
 
 st.write("""### Resulted Signal""")
