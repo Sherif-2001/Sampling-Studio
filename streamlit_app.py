@@ -45,13 +45,10 @@ st.sidebar.markdown('''
 Created with ❤️ by SBME Students.
 ''')
 
-
 st.write("""### ECG Signal""")
 if noise_flag:
     noisy_signal=functions.generateNoisySignal(SNR/100)
     st.line_chart(noisy_signal,x='Time',y='Amplitude')
-   
-    
 else:
     signal=functions.generateClearSignal()
     st.line_chart(signal,x='Time',y='Amplitude')
@@ -64,5 +61,6 @@ st.write("""### Resulted Signal""")
 result_signal = functions.addSignals(sine_amplitude, sine_frequancy,noise_flag,SNR)
 st.line_chart(result_signal,x='Time',y='Amplitude')
 
+st.write("""### Reconstructed Signal""")
 # print(functions.generateSampledSignal(fs))
 st.line_chart(functions.generateSampledSignal(fs),x='Time',y='Amplitude')

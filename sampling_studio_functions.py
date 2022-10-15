@@ -40,12 +40,10 @@ def addSignals(amplitude, frequency,noise_flag,noise_ratio = 0.0001):
         signal_copy["Amplitude"] += sineWave
     return signal_copy
 
-def generateSampledSignal(freq):
-    fs = freq
-    Ts = 1/fs
-    sig = signal_data[:-1:round(Ts*1000)]
-    print(fs)
-    return sig
+def generateSampledSignal(sampling_frequency):
+    Ts = 1/sampling_frequency
+    sampled_signal = signal_data[:-1:round(Ts*1000)]
+    return sampled_signal
     
 
 
