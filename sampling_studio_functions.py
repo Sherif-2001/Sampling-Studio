@@ -12,17 +12,23 @@ maximum_frequency = np.fft.fft(signal_data).max()
 sampling_frequency = 2 * maximum_frequency
 
 
-noisy_data = pd.read_csv("ecg_data.csv")[:display_range]
-
-
 def generateClearSignal():
     return signal_data
 
 
-def generateNoisySignal(noise_ratio):
-    noise = np.random.normal(0,noise_ratio,len(noisy_data))
+def generateNoisySignal(SNR):
+    noisy_data = signal_data.copy()
+    power= noisy_data["Amplitude"] ** 2
+    signal_average_power= np.mean(power)
+    signal_average_power_db = 10 * np.log10(signal_average_power)
+    noise_db = signal_average_power_db - SNR
+    noise_watts = 10 ** (noise_db/10)
+
+    noise = np.random.normal(0,np.sqrt(noise_watts),len(noisy_data))
+    
     noisy_data["Amplitude"] += noise
     return noisy_data
+
 
 def generateSineWave(amplitude, frequency):
     time = np.arange(0,10,1/100)
@@ -31,11 +37,11 @@ def generateSineWave(amplitude, frequency):
     return sineWave_data
 
 
-def addSignals(amplitude, frequency,noise_flag,noise_ratio = 0.0001):
+def addSignals(amplitude, frequency,noise_flag,SNR = 0.0001):
     sineWave = amplitude * np.sin(2 * np.pi * frequency * signal_time)
     signal_copy = signal_data.copy()
     if noise_flag:
-        signal_copy["Amplitude"] = generateNoisySignal(noise_ratio=noise_ratio)["Amplitude"] + sineWave
+        signal_copy["Amplitude"] = generateNoisySignal(SNR=SNR)["Amplitude"] + sineWave
     else:
         signal_copy["Amplitude"] += sineWave
     return signal_copy
@@ -44,6 +50,4 @@ def generateSampledSignal(sampling_frequency):
     Ts = 1/sampling_frequency
     sampled_signal = signal_data[:-1:round(Ts*1000)]
     return sampled_signal
-    
-
 

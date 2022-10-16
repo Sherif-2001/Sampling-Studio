@@ -36,7 +36,7 @@ sine_frequancy = st.sidebar.slider('Frequancy',0.5,20.0,10.0,0.1)
 
 st.sidebar.subheader('Generate Noise')
 noise_flag = st.sidebar.checkbox("Add Noise To Signal",False)
-SNR = st.sidebar.slider('SNR% ', 1, 100, 1)
+SNR = st.sidebar.slider('SNR', 1, 50, 1)
 
 fs = st.sidebar.slider('fs ', 20, 300,100)
 
@@ -47,7 +47,7 @@ Created with ❤️ by SBME Students.
 
 st.write("""### ECG Signal""")
 if noise_flag:
-    noisy_signal=functions.generateNoisySignal(SNR/100)
+    noisy_signal=functions.generateNoisySignal(SNR)
     st.line_chart(noisy_signal,x='Time',y='Amplitude')
 else:
     signal=functions.generateClearSignal()
@@ -63,4 +63,4 @@ st.line_chart(result_signal,x='Time',y='Amplitude')
 
 st.write("""### Reconstructed Signal""")
 # print(functions.generateSampledSignal(fs))
-st.line_chart(functions.generateSampledSignal(fs),x='Time',y='Amplitude')
+st.line_chart(functions.generateSampledSignal(fs))
