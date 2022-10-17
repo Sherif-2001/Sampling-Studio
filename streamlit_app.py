@@ -109,7 +109,7 @@ st.sidebar.subheader('Generate Noise')
 noise_flag = st.sidebar.checkbox("Add Noise To Signal",False)
 SNR = st.sidebar.slider('SNR', 1, 50, 1)
 
-fs = st.sidebar.slider('fs ', 20, 300,100)
+fs = st.sidebar.slider('fs ', 10, 500,100)
 
 st.sidebar.markdown('''
 ---

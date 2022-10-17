@@ -1,6 +1,7 @@
 import numpy as np
 import pandas as pd
-
+from scipy import interpolate
+import plotly_express as px
 
 display_range=1000
 
@@ -47,7 +48,12 @@ def addSignals(amplitude, frequency,noise_flag,SNR = 0.0001):
     return signal_copy
 
 def generateSampledSignal(sampling_frequency):
-    Ts = 1/sampling_frequency
-    sampled_signal = signal_data[:-1:round(Ts*1000)]
-    return sampled_signal
+
+    func = interpolate.interp1d(signal_data["Time"], signal_data["Amplitude"],'cubic')
+    time = np.arange(0,0.5,1/sampling_frequency)
+    ynew = func(time)
+   
+    # Ts = 1/sampling_frequency
+    # sampled_signal = signal_data[:-1:round(Ts*1000)]
+    return pd.DataFrame(ynew,time)
 
