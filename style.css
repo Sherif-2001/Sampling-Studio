@@ -1,11 +1,12 @@
 /* Logo */
 /* Adapted from Zachary Blackwood */
-[data-testid="stSidebar"] {
+/* [data-testid="stSidebar"] {
+
                 background-image: url(https://streamlit.io/images/brand/streamlit-logo-secondary-colormark-darktext.png);
                 background-size: 200px;
                 background-repeat: no-repeat;
                 background-position: 4px 20px;
-            }
+            } */
 
 
 /* Card */
@@ -50,4 +51,27 @@ footer.css-12gp8ed.eknhn3m4 {
 div.vg-tooltip-element {
   display: none;
 }
-
+.css-hxt7ib {
+  padding-top: 2rem;
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+.css-1oyhl2h {
+  display: flex;
+  -webkit-box-align: center;
+  align-items: center;
+  padding: 1rem;
+  background-color: rgb(14, 17, 23);
+  border-radius: 0.25rem;
+  color: rgb(250, 250, 250);
+  margin-top: -35px;
+}
+.css-1lsmgbg {
+  display: none;
+  color: rgba(250, 250, 250, 0.4);
+  flex: 0 1 0%;
+  font-size: 14px;
+  max-width: 46rem;
+  padding: 0.5rem 1rem;
+  width: 100%;
+}
