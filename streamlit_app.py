@@ -56,7 +56,7 @@ st.sidebar.markdown("***")
 st.sidebar.header('Noise')
 noise_flag = st.sidebar.checkbox("Add Noise", False)
 if noise_flag:
-    SNR = st.sidebar.slider('SNR', 1, 50, 25)
+    SNR = st.sidebar.slider('SNR%', 1, 100, 50)
 else:
     SNR = 0
 
