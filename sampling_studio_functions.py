@@ -9,8 +9,8 @@ from signal_class import Signal
 display_range=1000
 signal_data = pd.read_csv("ecg_data.csv")[:display_range]
 signal_time = signal_data["Time"]
-signal_amplitude = signal_data["Amplitude"]
 
+# signal_amplitude = signal_data["Amplitude"]
 # maximum_frequency = np.fft.fft(signal_data).max()
 # sampling_frequency = 2 * maximum_frequency
 
@@ -20,16 +20,17 @@ added_signals_list = []
 # ------------------------ Modifying Functions --------------------------- #
 
 def generateNoisySignal(SNR):
-    SNR_db = 10*np.log10(SNR)
-    power = signal_data["Amplitude"] ** 2
+    temp_noisy_data = signal_data.copy()
+    SNR_db = 10 * np.log10(SNR)
+    power = temp_noisy_data["Amplitude"] ** 2
     signal_average_power= np.mean(power)
     signal_average_power_db = 10 * np.log10(signal_average_power)
     noise_db = signal_average_power_db - SNR_db
     noise_watts = 10 ** (noise_db/10)
 
-    noise = np.random.normal(0,np.sqrt(noise_watts),len(signal_data))
-    noisy_data = signal_data["Amplitude"] + noise
-    return pd.DataFrame(noisy_data)
+    noise = np.random.normal(0,np.sqrt(noise_watts), len(temp_noisy_data))
+    temp_noisy_data["Amplitude"] += noise
+    return temp_noisy_data
 
 # ------------------------------------------------------------------------ #
 
@@ -41,7 +42,7 @@ def generateNoisySignal(SNR):
 
 # ------------------------------------------------------------------------ #
 
-def drawAddedSignals(noise_flag, SNR = 100):
+def renderAddedSignals(noise_flag, SNR = 100):
     clear_added_signal = signal_data.copy()
     noisy_added_signal = generateNoisySignal(SNR = SNR)
     for signal in added_signals_list:
@@ -78,7 +79,7 @@ def removeSignal(amplitude,frequency):
 
 # ---------------------------- Getter functions -------------------------- #
 
-def getClearSignal():
+def getClearSignalData():
     return signal_data
 
 # ------------------------------------------------------------------------ #

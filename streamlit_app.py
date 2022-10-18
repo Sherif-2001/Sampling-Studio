@@ -1,7 +1,6 @@
 import streamlit as st
 import pandas as pd
 import sampling_studio_functions as func
-from signal_class import Signal
 
 with open('style.css') as f:
     st.markdown(f'<style>{f.read()}</style>', unsafe_allow_html=True)
@@ -98,9 +97,9 @@ Created with ❤️ by SBME Students
 st.write("""### Signal""")
 if noise_flag:
     noisy_signal = func.generateNoisySignal(SNR = SNR_slider_value)
-    st.line_chart(noisy_signal)
+    st.line_chart(noisy_signal,x='Time', y='Amplitude')
 else:
-    st.line_chart(func.getClearSignal(), x='Time', y='Amplitude')
+    st.line_chart(func.getClearSignalData(), x='Time', y='Amplitude')
 
 # ------------------------------------------------------------------------ #
 
@@ -116,7 +115,7 @@ st.markdown("***")
 # ------------------------------------------------------------------------ #
 
 st.write("""### Resulted Signal""")
-st.line_chart(func.drawAddedSignals(noise_flag=noise_flag,SNR=SNR_slider_value),x="Time",y="Amplitude")
+st.line_chart(func.renderAddedSignals(noise_flag=noise_flag,SNR=SNR_slider_value),x="Time",y="Amplitude")
 
 # ------------------------------------------------------------------------ #
 
@@ -129,6 +128,9 @@ st.write("""### Reconstructed Signal""")
 # print(functions.generateSampledSignal(fs))
 Reconstructed_signal =func.generateSampledSignal(sampling_rate)
 st.line_chart(Reconstructed_signal)
+
+# ------------------------------------------------------------------------ #
+
 @st.cache
 def convert_df(df):
     # IMPORTANT: Cache the conversion to prevent computation on every rerun
