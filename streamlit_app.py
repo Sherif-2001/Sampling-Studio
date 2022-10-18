@@ -1,51 +1,94 @@
 import streamlit as st
-import sampling_studio_functions as functions
-
-
-
+import sampling_studio_functions as func
 
 with open('style.css') as f:
     st.markdown(f'<style>{f.read()}</style>', unsafe_allow_html=True)
 
+# # # Sidebar Elements
 
-# Sidebar header
-st.sidebar.header('Sampling Studio')
+# # Sidebar header
+website_title = '<p style="font-family:sans-serif; font-size: 40px;">Sampling Studio</p>'
+st.sidebar.markdown(website_title, unsafe_allow_html=True)
+# st.sidebar.header('Sampling Studio')
+
+# # Browsing a file
 st.sidebar.file_uploader('')
-# Browsing a file
+
+# # line break 
+st.sidebar.markdown("***")
 
 # time_hist_color = st.sidebar.selectbox('Color by') 
 
-st.sidebar.subheader('Generate Sine Wave')
-sine_amplitude = st.sidebar.slider('Amplitude', 0.0,1.0,1.0,0.01)
-sine_frequancy = st.sidebar.slider('Frequancy',0.5,20.0,10.0,0.1)
+# # Add signals to the origin signal
+st.sidebar.header('Add Signals')
 
-st.sidebar.subheader('Generate Noise')
-noise_flag = st.sidebar.checkbox("Add Noise To Signal",False)
-SNR = st.sidebar.slider('SNR', 1, 50, 1)
+adding_col1, adding_col2= st.sidebar.columns(2)
 
-fs = st.sidebar.slider('fs ', 10, 500,100)
+with adding_col1:
+    sine_amplitude = st.slider('Amplitude', 0.0,1.0,1.0,0.01)
 
+with adding_col2:
+    sine_frequancy = st.slider('Frequency',0.5,20.0,10.0,0.1)
+
+add_signal_button = st.sidebar.button("Add Signal...",key="add")
+
+if add_signal_button:
+    func.addSignals(sine_amplitude, sine_frequancy)
+
+# # Show every signal amplitude and frequency (last signal will be deleted if you click the button twice)
+for signal in func.added_signals_list:
+    st.sidebar.text(f"Amplitude: {signal.amplitude}, Frequency: {signal.frequency}")
+    remove_button = st.sidebar.button("Remove",key=f"{func.added_signals_list.index(signal)}")
+    if remove_button:
+        func.removeSignals(signal)
+
+# # line break 
+st.sidebar.markdown("***")
+
+# # Add noise to signal
+st.sidebar.header('Noise')
+noise_flag = st.sidebar.checkbox("Add Noise", False)
+if noise_flag:
+    SNR = st.sidebar.slider('SNR', 1, 50, 25)
+else:
+    SNR = 0
+
+# # line break 
+st.sidebar.markdown("***")
+
+# # Sampling
+st.sidebar.header('Sampling')
+sampling_rate = st.sidebar.slider('Sampling Frequency (Fs)', 10, 500,100)
+
+# # Sidebar bottom
 st.sidebar.markdown('''
 ---
-Created with ❤️ by SBME Students.
+Created with ❤️ by SBME Students
 ''')
 
-st.write("""### ECG Signal""")
-if noise_flag:
-    noisy_signal=functions.generateNoisySignal(SNR)
-    st.line_chart(noisy_signal,x='Time',y='Amplitude')
-else:
-    signal=functions.generateClearSignal()
-    st.line_chart(signal,x='Time',y='Amplitude')
+# # # Main Window Elements
 
-st.write("""### Generated Sine Wave""")
-generated_sine = functions.generateSineWave(sine_amplitude, sine_frequancy)
-st.line_chart(generated_sine)
+st.write("""### Signal""")
+if noise_flag:
+    noisy_signal=func.generateNoisySignal(SNR)
+    st.line_chart(noisy_signal, x='Time', y='Amplitude')
+else:
+    signal=func.generateClearSignal()
+    st.line_chart(signal, x='Time', y='Amplitude')
+
+# # line break
+st.markdown("***")
+
+# st.write("""### Generated Sine Wave""")
+# generated_sine = functions.generateSineWave(sine_amplitude, sine_frequancy)
+# st.line_chart(generated_sine)
 
 st.write("""### Resulted Signal""")
-result_signal = functions.addSignals(sine_amplitude, sine_frequancy,noise_flag,SNR)
-st.line_chart(result_signal,x='Time',y='Amplitude')
+st.line_chart(func.added_signals, x='Time', y='Amplitude')
+
+# # line break
+st.markdown("***")
 
 st.write("""### Reconstructed Signal""")
 # print(functions.generateSampledSignal(fs))
-st.line_chart(functions.generateSampledSignal(fs))
+st.line_chart(func.generateSampledSignal(sampling_rate))
