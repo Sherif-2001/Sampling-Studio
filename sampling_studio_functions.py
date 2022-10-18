@@ -19,11 +19,12 @@ def generateClearSignal():
 
 
 def generateNoisySignal(SNR):
+    SNR_db = 10*np.log10(SNR)
     noisy_data = signal_data.copy()
     power= noisy_data["Amplitude"] ** 2
     signal_average_power= np.mean(power)
     signal_average_power_db = 10 * np.log10(signal_average_power)
-    noise_db = signal_average_power_db - SNR
+    noise_db = signal_average_power_db - SNR_db
     noise_watts = 10 ** (noise_db/10)
 
     noise = np.random.normal(0,np.sqrt(noise_watts),len(noisy_data))
