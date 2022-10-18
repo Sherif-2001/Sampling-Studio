@@ -1,4 +1,6 @@
 import streamlit as st
+import pandas as pd
+import os
 import sampling_studio_functions as func
 
 with open('style.css') as f:
@@ -12,7 +14,12 @@ st.sidebar.markdown(website_title, unsafe_allow_html=True)
 # st.sidebar.header('Sampling Studio')
 
 # # Browsing a file
-st.sidebar.file_uploader('')
+uploaded_file = st.sidebar.file_uploader("", type="csv" , accept_multiple_files=False)
+if uploaded_file is not None:
+  df = pd.read_csv(uploaded_file)
+  st.write(df)  
+
+
 
 # # line break 
 st.sidebar.markdown("***")
