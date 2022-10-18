@@ -7,7 +7,7 @@ with open('style.css') as f:
 # # # Sidebar Elements
 
 # # Sidebar header
-website_title = '<p style="font-family:sans-serif; font-size: 40px;">Sampling Studio</p>'
+website_title = '<p class="page_titel">Sampling Studio</p>'
 st.sidebar.markdown(website_title, unsafe_allow_html=True)
 # st.sidebar.header('Sampling Studio')
 
