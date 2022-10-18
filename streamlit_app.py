@@ -1,4 +1,3 @@
-
 import streamlit as st
 import pandas as pd
 import os
@@ -98,4 +97,19 @@ st.markdown("***")
 
 st.write("""### Reconstructed Signal""")
 # print(functions.generateSampledSignal(fs))
-st.line_chart(func.generateSampledSignal(sampling_rate))
+Reconstructed_signal =func.generateSampledSignal(sampling_rate)
+st.line_chart(Reconstructed_signal)
+@st.cache
+def convert_df(df):
+    # IMPORTANT: Cache the conversion to prevent computation on every rerun
+    return df.to_csv().encode('utf-8')
+
+csv = convert_df(Reconstructed_signal)
+
+st.download_button(
+    label="Download data as CSV",
+    data=csv,
+    file_name='Reconstructed_signal.csv',
+    mime='text/csv',
+)
+
