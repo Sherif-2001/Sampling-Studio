@@ -97,5 +97,16 @@ div.vg-tooltip-element {
 .page_titel{
   font-family: 'Times New Roman', Times, serif;
   font-size: 35px; 
+  font-weight: bolder;
+}
+.css-12oz5g7 {
+  flex: 1 1 0%;
+  width: 100%;
+  padding: 2rem 1rem 10rem;
+  max-width: 55rem;
+}
+.css-12oz5g7 .stMarkdown h3 {
+  font-family: 'Open Sans', Times, serif;
+  font-size: 30px; 
   font-weight: bold;
 }
