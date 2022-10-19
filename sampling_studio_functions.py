@@ -1,8 +1,10 @@
 import numpy as np
 import pandas as pd
-from scipy import interpolate
 from signal_class import Signal
-# import plotly_express as px
+import plotly_express as px
+import altair as alt
+
+
 
 # ------------------------ Variables --------------------------- #
 
@@ -55,14 +57,33 @@ def renderAddedSignals(noise_flag, SNR = 100):
 
 # ------------------------------------------------------------------------ #
 
-def generateSampledSignal(sampling_frequency):
-    func = interpolate.interp1d(signal_data["Time"], signal_data["Amplitude"],kind='quadratic')
-    time = np.arange(0,0.5,1/sampling_frequency)
-    ynew = func(time)
-   
-    # Ts = 1/sampling_frequency
-    # sampled_signal = signal_data[:-1:round(Ts*1000)]
-    return pd.DataFrame(ynew,time)
+def generateSampledSignal(factor, f_max):
+    time = np.arange(0,0.5,1/(factor*f_max))
+    # Find the period    
+    T = signal_data["Time"][1] - signal_data["Time"][0]
+
+    # sinc interpolation
+    sincM = np.tile(time, (len(signal_data["Time"]), 1)) - np.tile(signal_data["Time"][:,np.newaxis], (1, len(time)))
+    ynew = np.dot(signal_data["Amplitude"], np.sinc(sincM/T))
+
+
+
+    #Plot
+    df=pd.DataFrame(ynew,time)
+
+
+
+    fig = px.line(df, markers=True, labels={
+                     "index": "Time (s)",
+                     "value": "Amplitude (mv)"
+                 },
+                title="Resulted Signal")
+    
+    fig.update_traces(marker=dict(color="crimson"))
+
+  
+    
+    return  fig,df
 
 # ------------------------------------------------------------------------ #
 
