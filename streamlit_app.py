@@ -1,6 +1,7 @@
 import streamlit as st
 import pandas as pd
 import sampling_studio_functions as func
+import numpy as np
 
 with open('style.css') as f:
     st.markdown(f'<style>{f.read()}</style>', unsafe_allow_html=True)
@@ -31,7 +32,7 @@ st.sidebar.markdown("***")
 st.sidebar.header('Noise')
 noise_flag = st.sidebar.checkbox("Add Noise", False)
 if noise_flag:
-    SNR_slider_value = st.sidebar.slider('SNR%', 1, 100, 50)
+    SNR_slider_value = st.sidebar.slider('SNR', 1, 100, 50)
 else:
     SNR_slider_value = 1
 
@@ -48,30 +49,35 @@ st.sidebar.header('Add Signals')
 adding_col1, adding_col2 = st.sidebar.columns(2)
 
 with adding_col1:
-    sine_amplitude = st.slider('Amplitude', 0.0, 1.0, 1.0, 0.01)
+    signal_amplitude = st.slider('Amplitude', 0.0, 1.0, 1.0, 0.01)
 
 with adding_col2:
-    sine_frequancy = st.slider('Frequency', 0.5, 20.0, 10.0, 0.1)
+    signal_frequancy = st.slider('Frequency', 0.5, 20.0, 10.0, 0.1)
+
+
+signal_phase = st.sidebar.slider('Phase', 0, 360, 0)
+
 
 add_signal_button = st.sidebar.button("Add Signal...", key="add")
 if add_signal_button:
-    func.addSignal(sine_amplitude, sine_frequancy)
+    func.addSignal(signal_amplitude, signal_frequancy, signal_phase)
 
 # ------------------------------------------------------------------------ #
 
 # # Show every signal amplitude and frequency in a select box
 Options = []
 for signal in func.getAddedSignalsList():
-    Options.append(f"Amp: {signal.amplitude},F: {signal.frequency}")
+    Options.append(f"Amp: {signal.amplitude},F: {signal.frequency},Phase: {signal.phase*180/np.pi}")
 selected_signal = st.sidebar.selectbox("Signals", Options)
 selected_signal_arr = str(selected_signal).split(",")
 if len(selected_signal_arr) != 1:
     amplitude_sub = float(selected_signal_arr[0][4:])
     frequency_sub = float(selected_signal_arr[1][2:])
+    phase_sub = float(selected_signal_arr[2][6:])
 
 remove_signal_button = st.sidebar.button("Remove")
 if remove_signal_button and len(func.getAddedSignalsList()) > 0:
-    func.removeSignal(amplitude=amplitude_sub, frequency=frequency_sub)
+    func.removeSignal(amplitude=amplitude_sub, frequency=frequency_sub, phase=phase_sub*np.pi/180)
 
 # # line break
 st.sidebar.markdown("***")

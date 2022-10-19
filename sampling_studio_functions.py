@@ -35,9 +35,10 @@ def generateNoisySignal(SNR):
 
 # ------------------------------------------------------------------------ #
 
-# def generateSineWave(amplitude, frequency):
+# def generateSineWave(amplitude, frequency, phase):
+#     phase_rad= phase*np.pi/180
 #     time = np.arange(0, 10, 1/100)
-#     sineWave = amplitude * np.sin(2 * np.pi * frequency * time)
+#     sineWave = amplitude * np.sin(2 * np.pi * frequency * time + phase_rad)
 #     sine_wave_data = pd.DataFrame(sineWave, time)
 #     return sine_wave_data
 
@@ -47,8 +48,8 @@ def renderAddedSignals(noise_flag, SNR = 100):
     clear_added_signal = signal_data.copy()
     noisy_added_signal = generateNoisySignal(SNR = SNR)
     for signal in added_signals_list:
-        clear_added_signal["Amplitude"] += (signal.amplitude * np.sin(2 * np.pi * signal.frequency * signal_time))
-        noisy_added_signal["Amplitude"] += (signal.amplitude * np.sin(2 * np.pi * signal.frequency * signal_time))
+        clear_added_signal["Amplitude"] += (signal.amplitude * np.sin(2 * np.pi * signal.frequency * signal_time + signal.phase))
+        noisy_added_signal["Amplitude"] += (signal.amplitude * np.sin(2 * np.pi * signal.frequency * signal_time + signal.phase))
     if noise_flag:
         return noisy_added_signal
     else:
@@ -64,8 +65,6 @@ def generateSampledSignal(factor, f_max):
     # sinc interpolation
     sincM = np.tile(time, (len(signal_data["Time"]), 1)) - np.tile(signal_data["Time"][:,np.newaxis], (1, len(time)))
     ynew = np.dot(signal_data["Amplitude"], np.sinc(sincM/T))
-
-
 
     #Plot
     df=pd.DataFrame(ynew,time)
@@ -86,14 +85,15 @@ def generateSampledSignal(factor, f_max):
 
 # ------------------------------------------------------------------------ #
 
-def addSignal(amplitude, frequency):
-    added_signals_list.append(Signal(amplitude = amplitude, frequency = frequency))
+def addSignal(amplitude, frequency, phase):
+    added_signals_list.append(Signal(amplitude = amplitude, frequency = frequency, phase = phase*np.pi/180))
 
 # ------------------------------------------------------------------------ #
 
-def removeSignal(amplitude,frequency):
+def removeSignal(amplitude, frequency, phase):
+    
     for added_signal in added_signals_list:
-        if added_signal.amplitude == amplitude and added_signal.frequency == frequency:
+        if added_signal.amplitude == amplitude and added_signal.frequency == frequency and added_signal.phase == phase:
             added_signals_list.remove(added_signal)
             return
 
