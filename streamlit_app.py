@@ -64,7 +64,7 @@ Options = []
 for signal in func.getAddedSignalsList():
     Options.append(f"Amp: {signal.amplitude} / Freq: {signal.frequency}")
 selected_signal = st.sidebar.selectbox("Signals", Options)
-selected_signal_arr = str(selected_signal).split(",")
+selected_signal_arr = str(selected_signal).split("/")
 if len(selected_signal_arr) != 1:
     amplitude_sub = float(selected_signal_arr[0][4:])
     frequency_sub = float(selected_signal_arr[1][2:])
