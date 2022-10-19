@@ -2,7 +2,6 @@ import numpy as np
 import pandas as pd
 from signal_class import Signal
 import plotly_express as px
-import altair as alt
 
 
 
