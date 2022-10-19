@@ -62,7 +62,7 @@ if add_signal_button:
 # # Show every signal amplitude and frequency in a select box
 Options = []
 for signal in func.getAddedSignalsList():
-    Options.append(f"Amp: {signal.amplitude},F: {signal.frequency}")
+    Options.append(f"Amp: {signal.amplitude} / Freq: {signal.frequency}")
 selected_signal = st.sidebar.selectbox("Signals", Options)
 selected_signal_arr = str(selected_signal).split(",")
 if len(selected_signal_arr) != 1:
