@@ -17,9 +17,7 @@ st.sidebar.markdown(website_title, unsafe_allow_html = True)
 
 # # Browsing a file
 uploaded_file = st.sidebar.file_uploader("", type="csv", accept_multiple_files = False)
-if uploaded_file is not None:
-    df = pd.read_csv(uploaded_file)
-    st.write(df)
+
 
 # ------------------------------------------------------------------------ #
 
@@ -60,24 +58,26 @@ signal_phase = st.sidebar.slider('Phase', 0, 360, 0)
 
 add_signal_button = st.sidebar.button("Add Signal...", key="add")
 if add_signal_button:
-    func.addSignal(signal_amplitude, signal_frequancy, signal_phase)
+    func.addSignalToList(signal_amplitude, signal_frequancy, signal_phase)
 
 # ------------------------------------------------------------------------ #
 
 # # Show every signal amplitude and frequency in a select box
 Options = []
 for signal in func.getAddedSignalsList():
-    Options.append(f"Amp: {signal.amplitude},F: {signal.frequency},Phase: {signal.phase*180/np.pi}")
+    Options.append(f"Amp: {signal.amplitude} / Freq: {signal.frequency} / Phase: {signal.phase*180/np.pi}")
 selected_signal = st.sidebar.selectbox("Signals", Options)
-selected_signal_arr = str(selected_signal).split("/")
+selected_signal_arr = str(selected_signal).split(" ")
 if len(selected_signal_arr) != 1:
-    amplitude_sub = float(selected_signal_arr[0][4:])
-    frequency_sub = float(selected_signal_arr[1][2:])
-    phase_sub = float(selected_signal_arr[2][6:])
+    amplitude_sub = float(selected_signal_arr[1])
+    frequency_sub = float(selected_signal_arr[4])
+    phase_sub = float(selected_signal[7])
 
 remove_signal_button = st.sidebar.button("Remove")
 if remove_signal_button and len(func.getAddedSignalsList()) > 0:
-    func.removeSignal(amplitude=amplitude_sub, frequency=frequency_sub, phase=phase_sub*np.pi/180)
+    func.removeSignalFromList(amplitude=amplitude_sub, frequency=frequency_sub,phase=phase_sub)
+
+# ------------------------------------------------------------------------ #
 
 # # line break
 st.sidebar.markdown("***")
@@ -86,8 +86,12 @@ st.sidebar.markdown("***")
 
 # # Sampling
 st.sidebar.header('Sampling')
-max_freq = st.sidebar.number_input('Fmax',150)
+if uploaded_file is not None:
+    max_freq = st.sidebar.number_input('Fmax',150)
+else:
+    max_freq = 1
 sampling_rate = st.sidebar.slider('Factor Fs/Fmax', 0.5, 10.0,2.0,0.5)
+
 # ------------------------------------------------------------------------ #
 
 # # Sidebar bottom
@@ -98,45 +102,37 @@ Created with ❤️ by SBME Students
 
 # ----------------------- Main Window Elements --------------------------- #
 
-st.write("""### Signal""")
-if noise_flag:
-    noisy_signal = func.generateNoisySignal(SNR = SNR_slider_value)
-    st.line_chart(noisy_signal,x='Time', y='Amplitude')
-else:
-    st.line_chart(func.getClearSignalData(), x='Time', y='Amplitude')
+chart_col1, chart_col2 = st.columns(2)
 
-# ------------------------------------------------------------------------ #
+with chart_col1:
+    st.write("""### Uploaded Signal""")
+    
+    if uploaded_file is None:
+        st.line_chart(func.getSignalData(uploaded_file))
+    else:
+        uploaded_signal = pd.read_csv(uploaded_file)["Amplitude"][:1000]
+        st.line_chart(uploaded_signal)
 
-# # line break
-st.markdown("***")
-
-# ------------------------------------------------------------------------ #
-
-# st.write("""### Generated Sine Wave""")
-# generated_sine = functions.generateSineWave(sine_amplitude, sine_frequancy)
-# st.line_chart(generated_sine)
+with chart_col2:
+    st.write("""### Generated Sine Wave""")
+    generated_sine = func.renderGeneratedSignal(signal_amplitude, signal_frequancy, signal_phase)
+    st.line_chart(generated_sine)
 
 # ------------------------------------------------------------------------ #
 
 st.write("""### Resulted Signal""")
-st.line_chart(func.renderAddedSignals(noise_flag=noise_flag,SNR=SNR_slider_value),x="Time",y="Amplitude")
-
-# ------------------------------------------------------------------------ #
-
-# # line break
-st.markdown("***")
+st.line_chart(func.renderResultedSignal(noise_flag,uploaded_file, SNR_slider_value))
 
 # ------------------------------------------------------------------------ #
 
 st.write("""### Reconstructed Signal""")
-# print(functions.generateSampledSignal(fs))
-fig,Reconstructed_signal =func.generateSampledSignal(sampling_rate,max_freq)
+fig,Reconstructed_signal = func.renderSampledSignal(sampling_rate, max_freq)
 st.plotly_chart(fig,use_container_width=True)
 
 # ------------------------------------------------------------------------ #
 
 @st.cache
-def convert_df(df):
+def convert_df(df): 
     # IMPORTANT: Cache the conversion to prevent computation on every rerun
     return df.to_csv().encode('utf-8')
 

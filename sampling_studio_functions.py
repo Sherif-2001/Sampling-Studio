@@ -3,95 +3,102 @@ import pandas as pd
 from signal_class import Signal
 import plotly_express as px
 
-
-
 # ------------------------ Variables --------------------------- #
 
-display_range=1000
-signal_data = pd.read_csv("ecg_data.csv")[:display_range]
-signal_time = signal_data["Time"]
+default_signal_time = np.arange(0,0.5,0.0005)
 
-# signal_amplitude = signal_data["Amplitude"]
-# maximum_frequency = np.fft.fft(signal_data).max()
-# sampling_frequency = 2 * maximum_frequency
+generated_signal = 1 * np.sin(2 * np.pi * 1 * default_signal_time)
+resulted_signal = None
 
 added_signals_list = []
+
+# signal_time = uploaded_signal_data["Time"]
+# signal_amplitude = signal_data["Amplitude"]
+
+# maximum_frequency = np.fft.fft(signal_data).max()
+# sampling_frequency = 2 * maximum_frequency
 
 
 # ------------------------ Modifying Functions --------------------------- #
 
-def generateNoisySignal(SNR):
-    temp_noisy_data = signal_data.copy()
+def generateNoise(SNR, uploaded_signal):
+    if uploaded_signal is not None:
+        temp_data = uploaded_signal
+    else:
+        temp_data = generated_signal.copy()
     SNR_db = 10 * np.log10(SNR)
-    power = temp_noisy_data["Amplitude"] ** 2
+    power = temp_data ** 2
     signal_average_power= np.mean(power)
     signal_average_power_db = 10 * np.log10(signal_average_power)
     noise_db = signal_average_power_db - SNR_db
     noise_watts = 10 ** (noise_db/10)
 
-    noise = np.random.normal(0,np.sqrt(noise_watts), len(temp_noisy_data))
-    temp_noisy_data["Amplitude"] += noise
-    return temp_noisy_data
+    noise = np.random.normal(0,np.sqrt(noise_watts), len(temp_data))
+    return noise
 
 # ------------------------------------------------------------------------ #
 
-# def generateSineWave(amplitude, frequency, phase):
-#     phase_rad= phase*np.pi/180
-#     time = np.arange(0, 10, 1/100)
-#     sineWave = amplitude * np.sin(2 * np.pi * frequency * time + phase_rad)
-#     sine_wave_data = pd.DataFrame(sineWave, time)
-#     return sine_wave_data
+def renderGeneratedSignal(amplitude, frequency, phase):
+    sineWave = amplitude * np.sin(2 * np.pi * frequency * default_signal_time + phase*np.pi/180)
+    sine_signal = pd.DataFrame(sineWave, default_signal_time)
+    return sine_signal
 
 # ------------------------------------------------------------------------ #
 
-def renderAddedSignals(noise_flag, SNR = 100):
-    clear_added_signal = signal_data.copy()
-    noisy_added_signal = generateNoisySignal(SNR = SNR)
-    for signal in added_signals_list:
-        clear_added_signal["Amplitude"] += (signal.amplitude * np.sin(2 * np.pi * signal.frequency * signal_time + signal.phase))
-        noisy_added_signal["Amplitude"] += (signal.amplitude * np.sin(2 * np.pi * signal.frequency * signal_time + signal.phase))
-    if noise_flag:
-        return noisy_added_signal
+def renderResultedSignal(is_noise_add, uploaded_signal, SNR = 100):
+    if uploaded_signal is not None:
+        temp_clear_resulted_signal = uploaded_signal
+        temp_noisy_resulted_signal = uploaded_signal + generateNoise(SNR, uploaded_signal)
     else:
-        return clear_added_signal
+        temp_clear_resulted_signal = generated_signal.copy()
+        temp_noisy_resulted_signal = generated_signal.copy() + generateNoise(SNR, uploaded_signal)
+
+    for signal in added_signals_list:
+        temp_clear_resulted_signal += (signal.amplitude * np.sin(2 * np.pi * signal.frequency * default_signal_time + signal.phase))
+        temp_noisy_resulted_signal += (signal.amplitude * np.sin(2 * np.pi * signal.frequency * default_signal_time + signal.phase))        
+
+    global resulted_signal
+    if is_noise_add:
+        resulted_signal = temp_noisy_resulted_signal
+        return pd.DataFrame(temp_noisy_resulted_signal, default_signal_time)
+    else:
+        resulted_signal = temp_clear_resulted_signal
+        return pd.DataFrame(temp_clear_resulted_signal, default_signal_time)
 
 # ------------------------------------------------------------------------ #
 
-def generateSampledSignal(factor, f_max):
+def renderSampledSignal(factor, f_max):
     time = np.arange(0,0.5,1/(factor*f_max))
     # Find the period    
-    T = signal_data["Time"][1] - signal_data["Time"][0]
+    # T = uploaded_signal_data["Time"][1] - uploaded_signal_data["Time"][0]
+    T = default_signal_time[1] - default_signal_time[0]
 
     # sinc interpolation
-    sincM = np.tile(time, (len(signal_data["Time"]), 1)) - np.tile(signal_data["Time"][:,np.newaxis], (1, len(time)))
-    ynew = np.dot(signal_data["Amplitude"], np.sinc(sincM/T))
+    # sincM = np.tile(time, (len(uploaded_signal_data["Time"]), 1)) - np.tile(uploaded_signal_data["Time"][:,np.newaxis], (1, len(time)))
+    sincM = np.tile(time, (len(default_signal_time), 1)) - np.tile(default_signal_time[:,np.newaxis], (1, len(time)))
+    
+    ynew = np.dot(resulted_signal, np.sinc(sincM/T))
 
     #Plot
     df=pd.DataFrame(ynew,time)
-
-
-
     fig = px.line(df, markers=True, labels={
                      "index": "Time (s)",
                      "value": "Amplitude (mv)"
                  },
                 title="Resulted Signal")
     
-    fig.update_traces(marker=dict(color="crimson"))
-
-  
+    fig.update_traces(marker=dict(color="crimson"))  
     
     return  fig,df
 
 # ------------------------------------------------------------------------ #
 
-def addSignal(amplitude, frequency, phase):
-    added_signals_list.append(Signal(amplitude = amplitude, frequency = frequency, phase = phase*np.pi/180))
+def addSignalToList(amplitude, frequency, phase):
+    added_signals_list.append(Signal(amplitude = amplitude, frequency = frequency, phase = phase))
 
 # ------------------------------------------------------------------------ #
 
-def removeSignal(amplitude, frequency, phase):
-    
+def removeSignalFromList(amplitude, frequency, phase):
     for added_signal in added_signals_list:
         if added_signal.amplitude == amplitude and added_signal.frequency == frequency and added_signal.phase == phase:
             added_signals_list.remove(added_signal)
@@ -99,8 +106,16 @@ def removeSignal(amplitude, frequency, phase):
 
 # ---------------------------- Getter functions -------------------------- #
 
-def getClearSignalData():
-    return signal_data
+def getSignalData(uploaded_signal):
+    if uploaded_signal is not None:
+        return pd.DataFrame(uploaded_signal, default_signal_time)
+    else:
+        return pd.DataFrame(generated_signal, default_signal_time)
+
+# ------------------------------------------------------------------------ #
+
+def getGeneratedSignal():
+    return generated_signal
 
 # ------------------------------------------------------------------------ #
 
