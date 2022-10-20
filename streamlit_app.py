@@ -73,8 +73,6 @@ remove_signal_button = st.sidebar.button("Remove")
 if remove_signal_button and len(func.getAddedSignalsList()) > 0:
     func.removeSignal(amplitude=amplitude_sub, frequency=frequency_sub)
 
-# ------------------------------------------------------------------------ #
-
 # # line break
 st.sidebar.markdown("***")
 
@@ -82,8 +80,8 @@ st.sidebar.markdown("***")
 
 # # Sampling
 st.sidebar.header('Sampling')
-sampling_rate = st.sidebar.slider('Sampling Frequency (Fs)', 10, 500, 100)
-
+max_freq = st.sidebar.number_input('Fmax',150)
+sampling_rate = st.sidebar.slider('Factor Fs/Fmax', 0.5, 10.0,2.0,0.5)
 # ------------------------------------------------------------------------ #
 
 # # Sidebar bottom
@@ -126,8 +124,8 @@ st.markdown("***")
 
 st.write("""### Reconstructed Signal""")
 # print(functions.generateSampledSignal(fs))
-Reconstructed_signal =func.generateSampledSignal(sampling_rate)
-st.line_chart(Reconstructed_signal)
+fig,Reconstructed_signal =func.generateSampledSignal(sampling_rate,max_freq)
+st.plotly_chart(fig,use_container_width=True)
 
 # ------------------------------------------------------------------------ #
 
