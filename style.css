@@ -120,3 +120,25 @@ div.vg-tooltip-element {
   flex-direction: column;
   align-items: flex-start;
   margin-top: -45px;}
+
+  .css-ocqkz7 {
+    display: flex;
+    flex-wrap: wrap;
+    -webkit-box-flex: 1;
+    flex-grow: 1;
+    -webkit-box-align: stretch;
+    align-items: stretch;
+    gap: 32px;}
+   
+   .stDownloadButton .edgvbvh9{
+     position: absolute;
+       top: -467px;
+       left: 6px;
+   }
+   .user-select-none {
+    position: relative;
+      width: 811px;
+      top: 70px;
+      height: 450px;
+  }
+  
