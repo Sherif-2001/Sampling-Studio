@@ -57,27 +57,30 @@ To start deployment
 |--|--|
 |<img  src="./images/images/sidebar1.png"  alt="DSP - sidebar1"  height="400"  align="center"/>|<img  src="./images/images/sidenar2.png"  alt="DSP- Sidebar2"  height="400"  align="center"/>|
 
-
-* **Workspace**
-
-
-|<img  src="./images/images/1.png"   height="400"  align="center"/>|<img src="./images/images/2.png"   alt="Droopy - Layout"  height="400"  align="center"/>|
-
  * **Themes**
- ![ligh](./images/images/light.png)
- ![dark](./images/images/main.png)
+ 
+| Light Mood | Dark Mood |
+|--|--|
+|<img  src="./images/images/light.png"  alt="DSP - sidebar1"  height="400"  align="center"/>|<img  src="./images/images/main.png"  alt="DSP- Sidebar2"  height="400"  align="center"/>|
+
 
 ## Features
 | upload or generate signal | signal or remove signal |
 |--|--|
 |<img  src="./images/images/upload.png"  alt="DSP - upload"  height="400"  align="center"/>|<img  src="./images/images/add.png"  alt="DSP- AddOrRemove"  height="400"  align="center"/>|
 
-- You can add noise 
-![noise](./images/images/noise.png)
-- You can sample your signal 
-![sample](./images/images/sample.png)
-- You can download your final output signal as a csv file
-![download](./images/images/download.png)
+| Add noise using SNR |
+|----|
+|<img  src="./images/images/noise.png"  alt="DSP - SNR"  height="400"  align="center"/>|
+
+| Sampling signal and interpolate using Sinc interpolation |
+|----|
+|<img  src="./images/images/sample.png"  alt="DSP - Sample"  height="400"  align="center"/>|
+
+| Download Sufnal as CSV |
+|----|
+|<img  src="./images/images/download.png"  alt="DSP - Download"  height="400"  align="center"/>|
+
  
 
 
