@@ -1,6 +1,7 @@
 import streamlit as st
 import pandas as pd
 import sampling_studio_functions as func
+import streamlit_modal as modal
 import numpy as np
 
 with open('style.css') as f:
@@ -14,10 +15,31 @@ st.sidebar.markdown(website_title, unsafe_allow_html = True)
 # st.sidebar.header('Sampling Studio')
 
 # ------------------------------------------------------------------------ #
+file_as_array = None
+uploaded_file = None
+with st.sidebar.expander(label="New Signal..."):
+    # # Browsing a file
+    st.markdown("# Upload Signal")
+    file = st.file_uploader("", type="csv", accept_multiple_files = False)
+    uploaded_file = file
+    if file is not None:
+        file_as_data_frame = pd.read_csv(file).values[:1000]
+        file_as_flat_list = [item for sublist in file_as_data_frame for item in sublist]
+        file_as_array = np.asarray(file_as_flat_list)
+    
+    st.markdown("***")
 
-# # Browsing a file
-uploaded_file = st.sidebar.file_uploader("", type="csv", accept_multiple_files = False)
-
+    st.markdown("# Generate Signal")
+    slider1 ,slider2 = st.columns(2)
+    with slider1:
+        amplitude_slider = st.number_input("Amplitude",0.0, 1.0, 1.0, 0.05,key="default_amp_slider",)
+    with slider2:
+        frequency_slider = st.number_input("Frequency", 0.5, 20.0, 10.0, 1.0,key="default_freq_slider")
+    phase_slider = st.number_input("Phase", 0, 360, 0,key="default_phase_slider")
+    
+    generate_button = st.button("Generate...")
+    if generate_button:
+        func.setGeneratedSignal(amplitude_slider,frequency_slider,phase_slider)
 
 # ------------------------------------------------------------------------ #
 
@@ -65,7 +87,7 @@ if add_signal_button:
 # # Show every signal amplitude and frequency in a select box
 Options = []
 for signal in func.getAddedSignalsList():
-    Options.append(f"Amp: {signal.amplitude} / Freq: {signal.frequency} / Phase: {signal.phase*180/np.pi}")
+    Options.append(f"Amp: {signal.amplitude} / Freq: {signal.frequency} / Phase: {signal.phase}")
 selected_signal = st.sidebar.selectbox("Signals", Options)
 selected_signal_arr = str(selected_signal).split(" ")
 if len(selected_signal_arr) != 1:
@@ -101,17 +123,18 @@ Created with ❤️ by SBME Students
 ''')
 
 # ----------------------- Main Window Elements --------------------------- #
-
 chart_col1, chart_col2 = st.columns(2)
 
 with chart_col1:
-    st.write("""### Uploaded Signal""")
+    if uploaded_file is not None:
+        st.write("""### Uploaded Signal""")
+    else:
+        st.write("""### Generated Signal""")
     
     if uploaded_file is None:
         st.line_chart(func.getSignalData(uploaded_file))
     else:
-        uploaded_signal = pd.read_csv(uploaded_file)["Amplitude"][:1000]
-        st.line_chart(uploaded_signal)
+        st.line_chart(file_as_array)
 
 with chart_col2:
     st.write("""### Generated Sine Wave""")
@@ -121,7 +144,7 @@ with chart_col2:
 # ------------------------------------------------------------------------ #
 
 st.write("""### Resulted Signal""")
-st.line_chart(func.renderResultedSignal(noise_flag,uploaded_file, SNR_slider_value))
+st.line_chart(func.renderResultedSignal(noise_flag, file_as_array, SNR_slider_value))
 
 # ------------------------------------------------------------------------ #
 
@@ -144,4 +167,3 @@ st.download_button(
     file_name='Reconstructed_signal.csv',
     mime='text/csv',
 )
-

@@ -4,7 +4,6 @@ from signal_class import Signal
 import plotly_express as px
 
 # ------------------------ Variables --------------------------- #
-
 default_signal_time = np.arange(0,0.5,0.0005)
 
 generated_signal = 1 * np.sin(2 * np.pi * 1 * default_signal_time)
@@ -54,8 +53,8 @@ def renderResultedSignal(is_noise_add, uploaded_signal, SNR = 100):
         temp_noisy_resulted_signal = generated_signal.copy() + generateNoise(SNR, uploaded_signal)
 
     for signal in added_signals_list:
-        temp_clear_resulted_signal += (signal.amplitude * np.sin(2 * np.pi * signal.frequency * default_signal_time + signal.phase))
-        temp_noisy_resulted_signal += (signal.amplitude * np.sin(2 * np.pi * signal.frequency * default_signal_time + signal.phase))        
+        temp_clear_resulted_signal += signal.amplitude * np.sin(2 * np.pi * signal.frequency * default_signal_time + signal.phase)
+        temp_noisy_resulted_signal += signal.amplitude * np.sin(2 * np.pi * signal.frequency * default_signal_time + signal.phase)       
 
     global resulted_signal
     if is_noise_add:
@@ -69,7 +68,7 @@ def renderResultedSignal(is_noise_add, uploaded_signal, SNR = 100):
 
 def renderSampledSignal(factor, f_max):
     time = np.arange(0,0.5,1/(factor*f_max))
-    # Find the period    
+    # Find the period
     # T = uploaded_signal_data["Time"][1] - uploaded_signal_data["Time"][0]
     T = default_signal_time[1] - default_signal_time[0]
 
@@ -121,3 +120,16 @@ def getGeneratedSignal():
 
 def getAddedSignalsList():
     return added_signals_list
+
+
+# ------------------------------------------------------------------------ #
+
+def clearAddedSignalsList():
+    added_signals_list.clear()
+
+# ------------------------------------------------------------------------ #
+
+def setGeneratedSignal(amplitude, frequency, phase):
+    global generated_signal
+    generated_signal = amplitude * np.sin(2 * np.pi * frequency * default_signal_time + phase)
+
