@@ -50,33 +50,34 @@ To start deployment
 
 ## 🖌️ Design
 
-![main widow](./images/custom%20theme.png)
+![main widow](./images/images/custom%20theme.png)
 * **side bar**
 
+| Sidebar up | sidebar buttom |
+|--|--|
+|<img  src="./images/images/sidebar1.png"  alt="DSP - sidebar1"  height="400"  align="center"/>|<img  src="./images/images/sidenar2.png"  alt="DSP- Sidebar2"  height="400"  align="center"/>|
 
-![main widow](./images/sidebar1.png)
-![main widow](./images/sidenar2.png)
+
 * **Workspace**
 
 
-|<img  src="./images/1.png"   height="400"  align="center"/>|<img src="./images/2.png"   alt="Droopy - Layout"  height="400"  align="center"/>|
+|<img  src="./images/images/1.png"   height="400"  align="center"/>|<img src="./images/images/2.png"   alt="Droopy - Layout"  height="400"  align="center"/>|
 
  * **Themes**
- ![ligh](./images/light.png)
- ![dark](./images/main.png)
+ ![ligh](./images/images/light.png)
+ ![dark](./images/images/main.png)
 
 ## Features
+| upload or generate signal | signal or remove signal |
+|--|--|
+|<img  src="./images/images/upload.png"  alt="DSP - upload"  height="400"  align="center"/>|<img  src="./images/images/add.png"  alt="DSP- AddOrRemove"  height="400"  align="center"/>|
 
-- You can upload your signal or generate it 
-![upload](./images/upload.png)
-- you can add signal or remove it 
-![add](./images/add.png)
 - You can add noise 
-![noise](./images/noise.png)
+![noise](./images/images/noise.png)
 - You can sample your signal 
-![sample](./images/sample.png)
+![sample](./images/images/sample.png)
 - You can download your final output signal as a csv file
-![download](./images/download.png)
+![download](./images/images/download.png)
  
 
 
