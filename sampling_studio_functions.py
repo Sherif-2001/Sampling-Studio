@@ -97,7 +97,7 @@ def renderSampledSignal(factor):
     y_inter = Interpolate(default_signal_time, time, ynew)
 
     #Plot
-    df=pd.DataFrame(y_inter,default_signal_time)
+    df=pd.DataFrame(default_signal_time, y_inter)
     fig = px.scatter(x=time,y=ynew,  labels={
                      "index": "Time (s)",
                      "value": "Amplitude (mv)"
@@ -107,7 +107,7 @@ def renderSampledSignal(factor):
     
     # fig.update_traces(marker=dict(color="crimson"))  
     
-    return  fig,df
+    return  fig,df.drop(df.columns[[0]],axis = 1)
 
 # ------------------------------------------------------------------------ #
 
