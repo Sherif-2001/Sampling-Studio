@@ -148,6 +148,7 @@ st.line_chart(func.renderResultedSignal(noise_flag, file_as_array, SNR_slider_va
 
 st.write("""### Reconstructed Signal""")
 fig,Reconstructed_signal = func.renderSampledSignal(sampling_rate)
+fig.update_layout(margin=dict(l=0, r=0, t=0, b=0))
 st.plotly_chart(fig,use_container_width=True)
 # ------------------------------------------------------------------------ #
 

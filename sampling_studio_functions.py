@@ -166,7 +166,6 @@ def renderSampledSignal(nyquist_rate):
     f, t, Sxx = signal.spectrogram(resulted_signal, 1/0.0005, return_onesided=False)
 
     f_max = np.argmax(f)
-    print(f_max)
 
     time = np.arange(0,0.5,1/(nyquist_rate*f_max))
 
