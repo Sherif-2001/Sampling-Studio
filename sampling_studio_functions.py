@@ -113,11 +113,6 @@ def getSignalData(uploaded_signal):
 
 # ------------------------------------------------------------------------ #
 
-def getGeneratedSignal():
-    return generated_signal
-
-# ------------------------------------------------------------------------ #
-
 def getAddedSignalsList():
     return added_signals_list
 

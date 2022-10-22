@@ -17,9 +17,10 @@ st.sidebar.markdown(website_title, unsafe_allow_html = True)
 # ------------------------------------------------------------------------ #
 file_as_array = None
 uploaded_file = None
-with st.sidebar.expander(label="New Signal..."):
+st.sidebar.markdown("# New Signal")
+with st.sidebar.expander("Choose Signal Type..."):
     # # Browsing a file
-    st.markdown("# Upload Signal")
+    st.markdown("## Upload Signal")
     file = st.file_uploader("", type="csv", accept_multiple_files = False)
     uploaded_file = file
     if file is not None:
@@ -29,7 +30,7 @@ with st.sidebar.expander(label="New Signal..."):
     
     st.markdown("***")
 
-    st.markdown("# Generate Signal")
+    st.markdown("## Generate Signal")
     slider1 ,slider2 = st.columns(2)
     with slider1:
         amplitude_slider = st.number_input("Amplitude",0.0, 1.0, 1.0, 0.05,key="default_amp_slider",)
@@ -38,7 +39,8 @@ with st.sidebar.expander(label="New Signal..."):
     phase_slider = st.number_input("Phase", 0, 360, 0,key="default_phase_slider")
     
     generate_button = st.button("Generate...")
-    if generate_button:
+    if generate_button and file is None:
+        func.clearAddedSignalsList()
         func.setGeneratedSignal(amplitude_slider,frequency_slider,phase_slider)
 
 # ------------------------------------------------------------------------ #
