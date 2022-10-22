@@ -41,7 +41,6 @@ with st.sidebar.expander("Choose Signal Type..."):
     
     generate_button = st.button("Generate...")
     if generate_button and file is None:
-        func.clearAddedSignalsList()
         func.setGeneratedSignal(amplitude_slider,frequency_slider,phase_slider)
 
 # ------------------------------------------------------------------------ #
@@ -69,40 +68,46 @@ st.sidebar.markdown("***")
 # # Add signals to the original signal
 st.sidebar.header('Add Signals')
 
-adding_col1, adding_col2 = st.sidebar.columns(2)
+adding_signal_slider_col1, adding_signal_slider_col2 = st.sidebar.columns(2)
 
-with adding_col1:
-    signal_amplitude = st.slider('Amplitude', 0.0, 1.0, 1.0, 0.01)
+with adding_signal_slider_col1:
+    added_signal_amplitude = st.slider('Amplitude', 0.0, 1.0, 1.0, 0.01)
 
-with adding_col2:
-    signal_frequancy = st.slider('Frequency', 0.5, 20.0, 10.0, 0.1)
+with adding_signal_slider_col2:
+    added_signal_frequancy = st.slider('Frequency', 0.5, 20.0, 10.0, 0.1)
 
 
-signal_phase = st.sidebar.slider('Phase', 0, 360, 0)
+added_signal_phase = st.sidebar.slider('Phase', 0, 360, 0)
 
 
 add_signal_button = st.sidebar.button("Add Signal...", key="add")
 if add_signal_button:
-    func.addSignalToList(signal_amplitude, signal_frequancy, signal_phase)
+    func.addSignalToList(added_signal_amplitude, added_signal_frequancy, added_signal_phase)
 
 # ------------------------------------------------------------------------ #
 
 # # Show every signal amplitude and frequency in a select box
-Options = []
+selectbox_signals_list = []
 for signal in func.getAddedSignalsList():
-    Options.append(f"Amp: {signal.amplitude} / Freq: {signal.frequency} / Phase: {round(signal.phase / np.pi*180)}")
-selected_signal = st.sidebar.selectbox("Signals", Options)
-selected_signal_arr = str(selected_signal).split(" ")
-if len(selected_signal_arr) != 1:
-    amplitude_sub = float(selected_signal_arr[1])
-    frequency_sub = float(selected_signal_arr[4])
-    phase_sub = float(selected_signal_arr[7])
- 
+    selectbox_signals_list.append(f"Amp: {signal.amplitude} / Freq: {signal.frequency} / Phase: {round(signal.phase / np.pi*180)}")
+selected_signal = st.sidebar.selectbox("Signals", selectbox_signals_list)
+selected_signal_split = str(selected_signal).split(" ")
+if len(selected_signal_split) != 1:
+    amplitude_sub = float(selected_signal_split[1])
+    frequency_sub = float(selected_signal_split[4])
+    phase_sub = float(selected_signal_split[7])
 
-remove_signal_button = st.sidebar.button("Remove")
-if remove_signal_button and len(func.getAddedSignalsList()) > 0:
-    print(phase_sub)
-    func.removeSignalFromList(amplitude=amplitude_sub, frequency=frequency_sub,phase=phase_sub)
+remove_button_col, clear_button_col = st.sidebar.columns(2)
+
+with remove_button_col:
+    remove_signal_button = st.button("Remove")
+    if remove_signal_button and len(func.getAddedSignalsList()) > 0:
+        func.removeSignalFromList(amplitude=amplitude_sub, frequency=frequency_sub,phase=phase_sub)
+
+with clear_button_col:
+    clear_signals_button = st.button("Clear")
+    if clear_signals_button:
+        func.clearAddedSignalsList()
 
 # ------------------------------------------------------------------------ #
 
@@ -128,9 +133,9 @@ Created with ❤️ by SBME Students
 ''')
 
 # ----------------------- Main Window Elements --------------------------- #
-chart_col1, chart_col2 = st.columns(2)
+new_signal_col, generated_signal_col = st.columns(2)
 
-with chart_col1:
+with new_signal_col:
     if uploaded_file is not None:
         st.write("""### Uploaded Signal""")
     else:
@@ -141,9 +146,9 @@ with chart_col1:
     else:
         st.line_chart(file_as_array)
 
-with chart_col2:
+with generated_signal_col:
     st.write("""### Generated Sine Wave""")
-    generated_sine = func.renderGeneratedSignal(signal_amplitude, signal_frequancy, signal_phase)
+    generated_sine = func.renderGeneratedSignal(added_signal_amplitude, added_signal_frequancy, added_signal_phase)
     st.line_chart(generated_sine)
 
 # ------------------------------------------------------------------------ #
