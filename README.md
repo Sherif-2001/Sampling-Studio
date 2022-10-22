@@ -29,16 +29,7 @@ validation of the Nyquist rate.
 Install used modules
 
 ```bash
-  pip install pandas
-```
-```bash
-  pip install sampling_studio_functions
-```
-```bash
-  pip install streamlit_modal
-```
-```bash
-  pip install numpy
+requirements-txt init
 ```
 To start deployment 
 ```bash
