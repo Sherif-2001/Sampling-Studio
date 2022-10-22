@@ -2,6 +2,8 @@ import numpy as np
 import pandas as pd
 from signal_class import Signal
 import plotly_express as px
+from scipy import signal
+
 
 # ------------------------ Variables --------------------------- #
 default_signal_time = np.arange(0,0.5,0.0005)
@@ -53,8 +55,8 @@ def renderResultedSignal(is_noise_add, uploaded_signal, SNR = 100):
         temp_noisy_resulted_signal = generated_signal.copy() + generateNoise(SNR, uploaded_signal)
 
     for signal in added_signals_list:
-        temp_clear_resulted_signal += signal.amplitude * np.sin(2 * np.pi * signal.frequency * default_signal_time + signal.phase)
-        temp_noisy_resulted_signal += signal.amplitude * np.sin(2 * np.pi * signal.frequency * default_signal_time + signal.phase)       
+        temp_clear_resulted_signal += signal.amplitude * np.sin(2 * np.pi * signal.frequency * default_signal_time + signal.phase * np.pi/180)
+        temp_noisy_resulted_signal += signal.amplitude * np.sin(2 * np.pi * signal.frequency * default_signal_time + signal.phase * np.pi/180)       
 
     global resulted_signal
     if is_noise_add:
@@ -66,40 +68,57 @@ def renderResultedSignal(is_noise_add, uploaded_signal, SNR = 100):
 
 # ------------------------------------------------------------------------ #
 
-def renderSampledSignal(factor, f_max):
-    time = np.arange(0,0.5,1/(factor*f_max))
+def Interpolate(time_new, signal_time, signal_amplitude):
+
     # Find the period
-    # T = uploaded_signal_data["Time"][1] - uploaded_signal_data["Time"][0]
-    T = default_signal_time[1] - default_signal_time[0]
+    T = signal_time[1] - signal_time[0]
 
     # sinc interpolation
-    # sincM = np.tile(time, (len(uploaded_signal_data["Time"]), 1)) - np.tile(uploaded_signal_data["Time"][:,np.newaxis], (1, len(time)))
-    sincM = np.tile(time, (len(default_signal_time), 1)) - np.tile(default_signal_time[:,np.newaxis], (1, len(time)))
+    sincM = np.tile(time_new, (len(signal_time), 1)) - np.tile(signal_time[:,np.newaxis], (1, len(time_new)))
+    ynew = np.dot(signal_amplitude, np.sinc(sincM/T))
     
-    ynew = np.dot(resulted_signal, np.sinc(sincM/T))
+
+    return  ynew
+
+  
+# ------------------------------------------------------------------------ #
+def renderSampledSignal(factor):
+    n_sample = len(default_signal_time)
+    
+    f, t, Sxx = signal.spectrogram(resulted_signal, 1/0.0005, return_onesided=False)
+
+    f_max = np.argmax(f)
+    print(f_max)
+
+    time = np.arange(0,0.5,1/(factor*f_max))
+
+    ynew = Interpolate(time, default_signal_time, resulted_signal)
+
+    y_inter = Interpolate(default_signal_time, time, ynew)
 
     #Plot
-    df=pd.DataFrame(ynew,time)
-    fig = px.line(df, markers=True, labels={
+    df=pd.DataFrame(y_inter,default_signal_time)
+    fig = px.scatter(x=time,y=ynew,  labels={
                      "index": "Time (s)",
                      "value": "Amplitude (mv)"
                  },
                 title="Resulted Signal")
+    fig.add_scatter(x=default_signal_time, y=y_inter)
     
-    fig.update_traces(marker=dict(color="crimson"))  
+    # fig.update_traces(marker=dict(color="crimson"))  
     
     return  fig,df
 
 # ------------------------------------------------------------------------ #
 
 def addSignalToList(amplitude, frequency, phase):
-    added_signals_list.append(Signal(amplitude = amplitude, frequency = frequency, phase = phase))
+    added_signals_list.append(Signal(amplitude = amplitude, frequency = frequency, phase =  phase*np.pi/180))
 
 # ------------------------------------------------------------------------ #
 
 def removeSignalFromList(amplitude, frequency, phase):
     for added_signal in added_signals_list:
-        if added_signal.amplitude == amplitude and added_signal.frequency == frequency and added_signal.phase == phase:
+        if added_signal.amplitude == amplitude and added_signal.frequency == frequency and round(added_signal.phase / np.pi*180)  ==  phase :
             added_signals_list.remove(added_signal)
             return
 
@@ -126,5 +145,5 @@ def clearAddedSignalsList():
 
 def setGeneratedSignal(amplitude, frequency, phase):
     global generated_signal
-    generated_signal = amplitude * np.sin(2 * np.pi * frequency * default_signal_time + phase)
+    generated_signal = amplitude * np.sin(2 * np.pi * frequency * default_signal_time +  phase*np.pi/180 )
 

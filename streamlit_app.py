@@ -30,6 +30,7 @@ with st.sidebar.expander("Choose Signal Type..."):
     
     st.markdown("***")
 
+
     st.markdown("## Generate Signal")
     slider1 ,slider2 = st.columns(2)
     with slider1:
@@ -89,16 +90,18 @@ if add_signal_button:
 # # Show every signal amplitude and frequency in a select box
 Options = []
 for signal in func.getAddedSignalsList():
-    Options.append(f"Amp: {signal.amplitude} / Freq: {signal.frequency} / Phase: {signal.phase}")
+    Options.append(f"Amp: {signal.amplitude} / Freq: {signal.frequency} / Phase: {round(signal.phase / np.pi*180)}")
 selected_signal = st.sidebar.selectbox("Signals", Options)
 selected_signal_arr = str(selected_signal).split(" ")
 if len(selected_signal_arr) != 1:
     amplitude_sub = float(selected_signal_arr[1])
     frequency_sub = float(selected_signal_arr[4])
-    phase_sub = float(selected_signal[7])
+    phase_sub = float(selected_signal_arr[7])
+ 
 
 remove_signal_button = st.sidebar.button("Remove")
 if remove_signal_button and len(func.getAddedSignalsList()) > 0:
+    print(phase_sub)
     func.removeSignalFromList(amplitude=amplitude_sub, frequency=frequency_sub,phase=phase_sub)
 
 # ------------------------------------------------------------------------ #
@@ -110,10 +113,10 @@ st.sidebar.markdown("***")
 
 # # Sampling
 st.sidebar.header('Sampling')
-if uploaded_file is not None:
-    max_freq = st.sidebar.number_input('Fmax',150)
-else:
-    max_freq = 1
+# if uploaded_file is not None:
+#     max_freq = st.sidebar.number_input('Fmax',150)
+# else:
+#     max_freq = 1
 sampling_rate = st.sidebar.slider('Factor Fs/Fmax', 0.5, 10.0,2.0,0.5)
 
 # ------------------------------------------------------------------------ #
@@ -151,7 +154,7 @@ st.line_chart(func.renderResultedSignal(noise_flag, file_as_array, SNR_slider_va
 # ------------------------------------------------------------------------ #
 
 st.write("""### Reconstructed Signal""")
-fig,Reconstructed_signal = func.renderSampledSignal(sampling_rate, max_freq)
+fig,Reconstructed_signal = func.renderSampledSignal(sampling_rate)
 st.plotly_chart(fig,use_container_width=True)
 
 # ------------------------------------------------------------------------ #
