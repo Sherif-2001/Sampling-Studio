@@ -47,19 +47,22 @@ st.sidebar.header('Add Signals')
 adding_signal_slider_col1, adding_signal_slider_col2 = st.sidebar.columns(2)
 
 with adding_signal_slider_col1:
-    added_signal_amplitude = st.slider('Amplitude', 0.0, 1.0, 1.0, 0.01)
+    signal_amplitude_slider = st.slider(
+        'Amplitude', 0.0, 1.0, 1.0, 0.01, format="%f")
 
 with adding_signal_slider_col2:
-    added_signal_frequancy = st.slider('Frequency', 0.5, 20.0, 10.0, 0.1)
+    signal_frequancy_slider = st.slider(
+        'Frequency', 0.5, 20.0, 10.0, 0.1, format="%f")
 
 
-added_signal_phase = st.sidebar.slider('Phase', 0, 360, 0)
+signal_phase_slider = st.sidebar.slider(
+    'Phase', 0.0, 2.0, 0.0, 0.1, format="%fπ")
 
 
 add_signal_button = st.sidebar.button("Add Signal...", key="add")
 if add_signal_button:
-    func.addSignalToList(added_signal_amplitude,
-                         added_signal_frequancy, added_signal_phase)
+    func.addSignalToList(signal_amplitude_slider,
+                         signal_frequancy_slider, signal_phase_slider)
 # ------------------------------------------------------------------------ #
 
 # # Show every signal amplitude and frequency in a select box
