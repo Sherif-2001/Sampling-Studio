@@ -162,8 +162,10 @@ def renderSampledSignal(nyquist_rate):
         downloaded_df : Dataframe
             the resulted signal to be downloaded
     """
+
+    step_size = default_signal_time[1] - default_signal_time[0]
     
-    f, t, Sxx = signal.spectrogram(resulted_signal, 1/0.0005, return_onesided=False)
+    f, t, Sxx = signal.spectrogram(resulted_signal, 1/step_size, return_onesided=False)
 
     f_max = np.argmax(f)
 

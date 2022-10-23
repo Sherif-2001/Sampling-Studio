@@ -100,11 +100,15 @@ with remove_button_col:
     remove_signal_button = st.button("Remove")
     if remove_signal_button and len(func.getAddedSignalsList()) > 0:
         func.removeSignalFromList(amplitude=amplitude_sub, frequency=frequency_sub,phase=phase_sub)
+        st.experimental_rerun()
+
 
 with clear_button_col:
     clear_signals_button = st.button("Clear")
     if clear_signals_button:
         func.clearAddedSignalsList()
+        st.experimental_rerun()
+
 # ------------------------------------------------------------------------ #
 
 # # line break
