@@ -2,6 +2,8 @@ import streamlit as st
 import pandas as pd
 import sampling_studio_functions as func
 import numpy as np
+import librosa, librosa.display
+
 
 
 # ---------------------- Elements styling -------------------------------- #
@@ -21,14 +23,17 @@ with label_col:
     st.markdown("## Upload Signal")
 with Button_col:
     file = st.file_uploader(
-        "", type="csv", accept_multiple_files=False)
+        "", type="wav", accept_multiple_files=False)
 
 uploaded_file = file
 if file is not None:
-    file_as_data_frame = pd.read_csv(file).values[:1000]
-    file_as_flat_list = [
-        item for sublist in file_as_data_frame for item in sublist]
-    file_as_array = np.asarray(file_as_flat_list)
+    file_wav = librosa.load(file)
+    print(file_wav)
+    # file_as_data_frame = pd.read_csv(file).values[:1000]
+    # file_as_flat_list = [
+    #     item for sublist in file_wav for item in sublist]
+    file_as_array = np.asarray(file_wav[0])[:1000]
+    func.set_signal_time(file_wav[1])
 
 
 # # Add noise to signal

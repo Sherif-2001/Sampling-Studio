@@ -7,7 +7,7 @@ from scipy import signal
 
 
 # ------------------------ Variables --------------------------- #
-default_signal_time = np.arange(0,0.5,0.0005)
+default_signal_time = np.arange(0,1,0.001)
 
 generated_signal = 1 * np.sin(2 * np.pi * 2 * default_signal_time)
 
@@ -15,6 +15,10 @@ resulted_signal = None
 
 added_signals_list = []
 # ------------------------ Modifying Functions --------------------------- #
+
+def set_signal_time(Fs):
+    global default_signal_time
+    default_signal_time = np.arange(0,1000*1/Fs,1/Fs)    
 
 def generateNoise(SNR, uploaded_signal):
     """
@@ -95,23 +99,19 @@ def renderResultedSignal(is_noise_add, uploaded_signal, SNR = 100):
     """
 
     if uploaded_signal is not None:
-        temp_clear_resulted_signal = uploaded_signal
-        temp_noisy_resulted_signal = uploaded_signal + generateNoise(SNR, uploaded_signal)
+        temp_resulted_signal = uploaded_signal
     else:
-        temp_clear_resulted_signal = generated_signal.copy()
-        temp_noisy_resulted_signal = generated_signal.copy() + generateNoise(SNR, uploaded_signal)
+        temp_resulted_signal = generated_signal
 
     for signal in added_signals_list:
-        temp_clear_resulted_signal += signal.amplitude * np.sin(2 * np.pi * signal.frequency * default_signal_time + signal.phase * np.pi/180)
-        temp_noisy_resulted_signal += signal.amplitude * np.sin(2 * np.pi * signal.frequency * default_signal_time + signal.phase * np.pi/180)       
+        temp_resulted_signal += signal.amplitude * np.sin(2 * np.pi * signal.frequency * default_signal_time + signal.phase)
 
     global resulted_signal
     if is_noise_add:
-        resulted_signal = temp_noisy_resulted_signal
-        return pd.DataFrame(temp_noisy_resulted_signal, default_signal_time)
+        resulted_signal = temp_resulted_signal + generateNoise(SNR, uploaded_signal)
     else:
-        resulted_signal = temp_clear_resulted_signal
-        return pd.DataFrame(temp_clear_resulted_signal, default_signal_time)
+        resulted_signal = temp_resulted_signal
+        return pd.DataFrame(resulted_signal, default_signal_time)
 
 # ------------------------------------------------------------------------ #
 
@@ -170,7 +170,7 @@ def renderSampledSignal(nyquist_rate):
 
     f_max = np.argmax(f)
 
-    time = np.arange(0,0.5,1/(nyquist_rate*f_max))
+    time = np.arange(0,default_signal_time[-1],1/(nyquist_rate*f_max))
 
     ynew = interpolate(time, default_signal_time, resulted_signal)
 
