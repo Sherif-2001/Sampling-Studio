@@ -8,10 +8,10 @@
                 background-position: 4px 20px;
             } */
 
-
 /* Card */
 /* Adapted from https://startbootstrap.com/theme/sb-admin-2 */
-div.css-1r6slb0.e1tzin5v2 {
+
+/* div.css-1r6slb0.e1tzin5v2 {
     background-color: #FFFFFF;
     border: 1px solid #CCCCCC;
     padding: 5% 5% 5% 10%;
@@ -20,20 +20,18 @@ div.css-1r6slb0.e1tzin5v2 {
     border-left: 0.5rem solid #9AD8E1 !important;
     box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15) !important;
     
-}
+} */
 
-label.css-mkogse.e16fv1kl2 {
+/* label.css-mkogse.e16fv1kl2 {
     color: #36b9cc !important;
     font-weight: 700 !important;
     text-transform: uppercase !important;
-}
-
+} */
 
 /* Move block container higher */
 div.block-container.css-18e3th9.egzxvld2 {
   margin-top: -5em;
 }
-
 
 /* Hide hamburger menu and footer */
 div.css-r698ls.e8zbici2 {
@@ -60,8 +58,8 @@ div.vg-tooltip-element {
   display: flex;
   -webkit-box-align: center;
   align-items: center;
-/*   padding: 1rem; */
-  background-color:transparent;
+  /*   padding: 1rem; */
+  background-color: transparent;
   border-radius: 0.25rem;
   color: rgb(250, 250, 250);
   margin-top: -35px;
@@ -75,28 +73,26 @@ div.vg-tooltip-element {
   padding: 0.5rem 1rem;
   width: 100%;
 }
-.css-pmxsec .exg6vvm14{
+.css-pmxsec .exg6vvm14 {
   display: none;
- }
- .css-1oyhl2h{
-   padding: 0;
- }
-  
-.block-container.css-128j0gw.egzxvld2 .stMarkdown h2{
-  font-size: 20px;
-  font-weight: bold;
-  
+}
+.css-1oyhl2h {
+  padding: 0;
 }
 
-.css-pmxsec.exg6vvm0{
+.block-container.css-128j0gw.egzxvld2 .stMarkdown h2 {
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.css-pmxsec.exg6vvm0 {
   padding-top: 30px;
   font-size: 20px;
   font-family: "Work Sans", sans-serif;
-  
 }
-.page_titel{
-  font-family: 'Times New Roman', Times, serif;
-  font-size: 32px; 
+.page_titel {
+  font-family: "Times New Roman", Times, serif;
+  font-size: 32px;
   font-weight: bolder;
 }
 .css-12oz5g7 {
@@ -106,11 +102,11 @@ div.vg-tooltip-element {
   max-width: 55rem;
 }
 .css-12oz5g7 .stMarkdown h3 {
-  font-family: 'Open Sans', Times, serif;
-  font-size: 30px; 
+  font-family: "Open Sans", Times, serif;
+  font-size: 30px;
   font-weight: bold;
 }
-.stSelectbox .css-k3w14i.effi0qh3{
+.stSelectbox .css-k3w14i.effi0qh3 {
   font-size: 17px;
 }
 
@@ -119,26 +115,27 @@ div.vg-tooltip-element {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  margin-top: -45px;}
+  margin-top: -45px;
+}
 
-  .css-ocqkz7 {
-    display: flex;
-    flex-wrap: wrap;
-    -webkit-box-flex: 1;
-    flex-grow: 1;
-    -webkit-box-align: stretch;
-    align-items: stretch;
-    gap: 32px;}
-   
-   .stDownloadButton .edgvbvh9{
-     position: absolute;
-       top: -467px;
-       left: 6px;
-   }
-   .user-select-none {
-    position: relative;
-      width: 811px;
-      top: 70px;
-      height: 450px;
-  }
-  
+.css-ocqkz7 {
+  display: flex;
+  flex-wrap: wrap;
+  -webkit-box-flex: 1;
+  flex-grow: 1;
+  -webkit-box-align: stretch;
+  align-items: stretch;
+  gap: 32px;
+}
+
+.stDownloadButton .edgvbvh9 {
+  position: absolute;
+  top: -467px;
+  left: 6px;
+}
+.user-select-none {
+  position: relative;
+  width: 811px;
+  top: 70px;
+  height: 450px;
+}

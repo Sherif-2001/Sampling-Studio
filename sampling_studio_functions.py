@@ -1,3 +1,4 @@
+from matplotlib.pyplot import grid
 import numpy as np
 import pandas as pd
 from signal_class import Signal
@@ -181,10 +182,17 @@ def renderSampledSignal(nyquist_rate):
                      "x": "Time (s)",
                      "y": "Amplitude (mv)"
                  },
-                title="Resulted Signal")
+                title="Resulted Signal"
+                  ,color_discrete_sequence=['#4558E8']
+                )
+    fig.update_traces(marker={'size': 6})
+
     fig.add_scatter(x=default_signal_time, y=y_inter)
     
     fig.update_layout(showlegend=False)
+    fig.update_xaxes(showline=True, linewidth=2, linecolor='black', gridcolor='#5E5E5E')
+    fig.update_yaxes(showline=True, linewidth=2, linecolor='black', gridcolor='#5E5E5E')
+    
   
     
     return  fig,df.drop(df.columns[[0]],axis = 1)
