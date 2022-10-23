@@ -8,7 +8,7 @@ from scipy import signal
 # ------------------------ Variables --------------------------- #
 default_signal_time = np.arange(0,0.5,0.0005)
 
-generated_signal = 1 * np.sin(2 * np.pi * 1 * default_signal_time)
+generated_signal = 1 * np.sin(2 * np.pi * 2 * default_signal_time)
 
 resulted_signal = None
 
@@ -76,7 +76,7 @@ def renderGeneratedSignal(amplitude, frequency, phase):
 
 def renderResultedSignal(is_noise_add, uploaded_signal, SNR = 100):
     """
-        Generate sinusoidal wave
+        Render the resulted signal
 
         Parameters
         ----------
