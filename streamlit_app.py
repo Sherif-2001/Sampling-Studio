@@ -28,6 +28,7 @@ if file is not None:
     #     item for sublist in file_wav for item in sublist]
     file_as_array = np.asarray(file_wav[0])[:1000]
     func.set_signal_time(file_wav[1])
+    
 
 # ------------------------------------------------------------------------ #
 st.sidebar.markdown("***")
@@ -112,8 +113,8 @@ if normalized_sample_flag:
     'Nyquist rate Fs/Fmax', 0.5, 10.0, 2.0, 0.5, format="%f")
 else:
     sampling_rate = st.sidebar.slider(
-    'Fs', 1.0, 5.0*func.getMaxFrequancy(), 2.0, 0.5, format="%f")
-
+    'Fs', round(func.f_max*0.5)*1.0, 5.0*func.f_max, 2.0*float(func.f_max), 0.5, format="%f")
+print(func.f_max)
 
 
 # ------------------------------------------------------------------------ #

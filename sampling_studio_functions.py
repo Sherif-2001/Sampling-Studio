@@ -2,14 +2,13 @@ import numpy as np
 import pandas as pd
 from signal_class import Signal
 import plotly_express as px
-from scipy import signal
 
 
 # ------------------------ Variables --------------------------- #
 default_signal_time = np.arange(0,1,0.001)
 
-default_signal = np.array([1 * np.sin(2 * np.pi * 1 * t) for t in default_signal_time])
-# 1 * np.sin(2 * np.pi * 1 * default_signal_time)
+default_signal = 1 * np.sin(2 * np.pi * 1 * default_signal_time) 
+f_max = 1
 
 resulted_signal = None
 
@@ -19,8 +18,9 @@ uploaded_signals_list = []
 # ------------------------ Modifying Functions --------------------------- #
 
 def set_signal_time(Fs):
-    global default_signal_time
-    default_signal_time = np.arange(0,1000*1/Fs,1/Fs)    
+    global default_signal_time, f_max
+    default_signal_time = np.arange(0,1000*1/Fs,1/Fs) 
+    f_max = Fs/2 
 
 def generateNoise(SNR):
     """
@@ -49,31 +49,6 @@ def generateNoise(SNR):
 
     noise = np.random.normal(0,np.sqrt(noise_watts), len(temp_signal))
     return noise
-
-# ------------------------------------------------------------------------ #
-
-# def renderGeneratedSignal(amplitude, frequency, phase):
-#     """
-#         Generate sinusoidal wave
-
-#         Parameters
-#         ----------
-#         amplitude : float
-#             the amplitude of the signal
-#         frequency : float
-#             the frequancy of the signal
-#         phase : float
-#             the phase of the signal
-
-#         Return
-#         ----------
-#         sine_signal : dataframe of generated signal
-#             dataframe of generated signal
-#     """
-
-#     sineWave = amplitude * np.sin(2 * np.pi * frequency * default_signal_time + phase*np.pi/180)
-#     sine_signal = pd.DataFrame(sineWave, default_signal_time)
-#     return sine_signal
 
 # ------------------------------------------------------------------------ #
 def generateResultedSignal(is_noise_add, uploaded_signal, SNR = 1):
@@ -141,17 +116,6 @@ def interpolate(time_new, signal_time, signal_amplitude):
     return new_Amplitude
   
 # ------------------------------------------------------------------------ #
-def getMaxFrequancy():
-    step_size = default_signal_time[1] - default_signal_time[0]
-    if resulted_signal is not None:
-        f, t, Sxx = signal.spectrogram(resulted_signal, 1/step_size, return_onesided=False)
-    else: 
-        f, t, Sxx = signal.spectrogram(default_signal, 1/step_size, return_onesided=False)
-
-
-    f_max = np.argmax(f)
-    return f_max
-# ------------------------------------------------------------------------ #
 
 def renderSampledSignal(nyquist_rate, normalized_sample_flag):
     """
@@ -169,9 +133,10 @@ def renderSampledSignal(nyquist_rate, normalized_sample_flag):
         downloaded_df : Dataframe
             the resulted signal to be downloaded
     """
+    global f_max
     if normalized_sample_flag:
 
-        f_max = getMaxFrequancy()
+        
         time = np.arange(0,default_signal_time[-1],1/(nyquist_rate*f_max))
     else:
         time = np.arange(0,default_signal_time[-1],1/(nyquist_rate))
@@ -215,8 +180,10 @@ def addSignalToList(amplitude, frequency, phase):
         phase : float
             the phase of the signal        
     """
+    global f_max
 
     added_signals_list.append(Signal(amplitude = amplitude, frequency = frequency, phase = phase))
+    f_max = max(f_max,frequency)
 
 # ------------------------------------------------------------------------ #
 
