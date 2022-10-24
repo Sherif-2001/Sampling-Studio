@@ -8,7 +8,8 @@ from scipy import signal
 # ------------------------ Variables --------------------------- #
 default_signal_time = np.arange(0,1,0.001)
 
-default_signal = 1 * np.sin(2 * np.pi * 1 * default_signal_time)
+default_signal = np.array([1 * np.sin(2 * np.pi * 1 * t) for t in default_signal_time])
+# 1 * np.sin(2 * np.pi * 1 * default_signal_time)
 
 resulted_signal = None
 
@@ -152,7 +153,7 @@ def getMaxFrequancy():
     return f_max
 # ------------------------------------------------------------------------ #
 
-def renderSampledSignal(nyquist_rate):
+def renderSampledSignal(nyquist_rate, normalized_sample_flag):
     """
         render sampled and interpolated signal
 
@@ -168,10 +169,13 @@ def renderSampledSignal(nyquist_rate):
         downloaded_df : Dataframe
             the resulted signal to be downloaded
     """
+    if normalized_sample_flag:
 
-    f_max = getMaxFrequancy()
+        f_max = getMaxFrequancy()
+        time = np.arange(0,default_signal_time[-1],1/(nyquist_rate*f_max))
+    else:
+        time = np.arange(0,default_signal_time[-1],1/(nyquist_rate))
 
-    time = np.arange(0,default_signal_time[-1],1/(nyquist_rate*f_max))
 
     ynew = interpolate(time, default_signal_time, resulted_signal)
 

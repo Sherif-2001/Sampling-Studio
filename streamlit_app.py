@@ -112,7 +112,7 @@ if normalized_sample_flag:
     'Nyquist rate Fs/Fmax', 0.5, 10.0, 2.0, 0.5, format="%f")
 else:
     sampling_rate = st.sidebar.slider(
-    'Fs', 0.5, 5.0*func.getMaxFrequancy(), 2.0, 0.5, format="%f")
+    'Fs', 1.0, 5.0*func.getMaxFrequancy(), 2.0, 0.5, format="%f")
 
 
 
@@ -131,7 +131,7 @@ st.markdown(website_title, unsafe_allow_html=True)
 
 # st.write("""### Reconstructed Signal""")
 func.generateResultedSignal(noise_flag, file_as_array, SNR_slider_value)
-fig, Reconstructed_signal = func.renderSampledSignal(sampling_rate)
+fig, Reconstructed_signal = func.renderSampledSignal(sampling_rate, normalized_sample_flag)
 # fig.update_traces(line_color='#EAE3FF')
 
 st.plotly_chart(fig, use_container_width=True)
