@@ -1,4 +1,3 @@
-from matplotlib.pyplot import grid
 import numpy as np
 import pandas as pd
 from signal_class import Signal
@@ -9,18 +8,20 @@ from scipy import signal
 # ------------------------ Variables --------------------------- #
 default_signal_time = np.arange(0,1,0.001)
 
-generated_signal = 1 * np.sin(2 * np.pi * 2 * default_signal_time)
+default_signal = 1 * np.sin(2 * np.pi * 1 * default_signal_time)
 
 resulted_signal = None
 
 added_signals_list = []
+
+uploaded_signals_list = []
 # ------------------------ Modifying Functions --------------------------- #
 
 def set_signal_time(Fs):
     global default_signal_time
     default_signal_time = np.arange(0,1000*1/Fs,1/Fs)    
 
-def generateNoise(SNR, uploaded_signal):
+def generateNoise(SNR):
     """
         Generate noise according to the SNR
 
@@ -37,49 +38,44 @@ def generateNoise(SNR, uploaded_signal):
             Generated noise
     """
 
-    if uploaded_signal is not None:
-        temp_data = uploaded_signal
-    else:
-        temp_data = generated_signal.copy()
-
+    temp_signal = resulted_signal
     SNR_db = 10 * np.log10(SNR)
-    power = temp_data ** 2
+    power = temp_signal ** 2
     signal_average_power= np.mean(power)
     signal_average_power_db = 10 * np.log10(signal_average_power)
     noise_db = signal_average_power_db - SNR_db
     noise_watts = 10 ** (noise_db/10)
 
-    noise = np.random.normal(0,np.sqrt(noise_watts), len(temp_data))
+    noise = np.random.normal(0,np.sqrt(noise_watts), len(temp_signal))
     return noise
 
 # ------------------------------------------------------------------------ #
 
-def renderGeneratedSignal(amplitude, frequency, phase):
-    """
-        Generate sinusoidal wave
+# def renderGeneratedSignal(amplitude, frequency, phase):
+#     """
+#         Generate sinusoidal wave
 
-        Parameters
-        ----------
-        amplitude : float
-            the amplitude of the signal
-        frequency : float
-            the frequancy of the signal
-        phase : float
-            the phase of the signal
+#         Parameters
+#         ----------
+#         amplitude : float
+#             the amplitude of the signal
+#         frequency : float
+#             the frequancy of the signal
+#         phase : float
+#             the phase of the signal
 
-        Return
-        ----------
-        sine_signal : dataframe of generated signal
-            dataframe of generated signal
-    """
+#         Return
+#         ----------
+#         sine_signal : dataframe of generated signal
+#             dataframe of generated signal
+#     """
 
-    sineWave = amplitude * np.sin(2 * np.pi * frequency * default_signal_time + phase*np.pi/180)
-    sine_signal = pd.DataFrame(sineWave, default_signal_time)
-    return sine_signal
+#     sineWave = amplitude * np.sin(2 * np.pi * frequency * default_signal_time + phase*np.pi/180)
+#     sine_signal = pd.DataFrame(sineWave, default_signal_time)
+#     return sine_signal
 
 # ------------------------------------------------------------------------ #
-
-def renderResultedSignal(is_noise_add, uploaded_signal, SNR = 100):
+def generateResultedSignal(is_noise_add, uploaded_signal, SNR = 1):
     """
         Render the resulted signal
 
@@ -101,17 +97,18 @@ def renderResultedSignal(is_noise_add, uploaded_signal, SNR = 100):
     if uploaded_signal is not None:
         temp_resulted_signal = uploaded_signal
     else:
-        temp_resulted_signal = generated_signal
+        temp_resulted_signal = default_signal
 
     for signal in added_signals_list:
-        temp_resulted_signal += signal.amplitude * np.sin(2 * np.pi * signal.frequency * default_signal_time + signal.phase)
+        temp_resulted_signal += signal.amplitude * np.sin(2 * np.pi * signal.frequency * default_signal_time + signal.phase * np.pi)
 
     global resulted_signal
     if is_noise_add:
         resulted_signal = temp_resulted_signal + generateNoise(SNR, uploaded_signal)
     else:
         resulted_signal = temp_resulted_signal
-        return pd.DataFrame(resulted_signal, default_signal_time)
+    return pd.DataFrame(resulted_signal, default_signal_time)
+
 
 # ------------------------------------------------------------------------ #
 
@@ -140,10 +137,7 @@ def interpolate(time_new, signal_time, signal_amplitude):
     # sinc interpolation
     sincM = np.tile(time_new, (len(signal_time), 1)) - np.tile(signal_time[:,np.newaxis], (1, len(time_new)))
     new_Amplitude = np.dot(signal_amplitude, np.sinc(sincM/T))
-    
-
-    return  new_Amplitude
-
+    return new_Amplitude
   
 # ------------------------------------------------------------------------ #
 def renderSampledSignal(nyquist_rate):
@@ -154,7 +148,6 @@ def renderSampledSignal(nyquist_rate):
         ----------
         nyquist_rate : float
             F_sample/F_max
-        
 
         Return
         ----------
@@ -177,25 +170,23 @@ def renderSampledSignal(nyquist_rate):
     y_inter = interpolate(default_signal_time, time, ynew)
 
     #Plot
-    df=pd.DataFrame(default_signal_time, y_inter)
-    fig = px.scatter(x=time,y=ynew,  labels={
-                     "x": "Time (s)",
-                     "y": "Amplitude (mv)"
-                 },
-                title="Resulted Signal"
-                  ,color_discrete_sequence=['#4558E8']
-                )
-    fig.update_traces(marker={'size': 6})
+    df = pd.DataFrame(default_signal_time, y_inter)
+    fig = px.scatter(
+                    x = time,
+                    y = ynew,
+                    labels={"x": "Time (s)","y": "Amplitude (mv)"},
+                    title="Resulted Signal",
+                    color_discrete_sequence=['#4558E8']
+        )
 
     fig.add_scatter(x=default_signal_time, y=y_inter)
+
+    fig.update_traces(marker = {'size': 6})
+    fig.update_layout(showlegend=False,margin=dict(l=0, r=0, t=0, b=0),autosize = True)
+    fig.update_xaxes(showline=True, linewidth=2, linecolor='black', gridcolor='#5E5E5E', title_font = dict(size=24, family='Arial'))
+    fig.update_yaxes(showline=True, linewidth=2, linecolor='black', gridcolor='#5E5E5E',title_font = dict(size=24, family='Arial'))
     
-    fig.update_layout(showlegend=False)
-    fig.update_xaxes(showline=True, linewidth=2, linecolor='black', gridcolor='#5E5E5E')
-    fig.update_yaxes(showline=True, linewidth=2, linecolor='black', gridcolor='#5E5E5E')
-    
-  
-    
-    return  fig,df.drop(df.columns[[0]],axis = 1)
+    return  fig, df.drop(df.columns[[0]],axis = 1)
 
 # ------------------------------------------------------------------------ #
 
@@ -213,7 +204,7 @@ def addSignalToList(amplitude, frequency, phase):
             the phase of the signal        
     """
 
-    added_signals_list.append(Signal(amplitude = amplitude, frequency = frequency, phase =  phase*np.pi/180))
+    added_signals_list.append(Signal(amplitude = amplitude, frequency = frequency, phase = phase))
 
 # ------------------------------------------------------------------------ #
 
@@ -231,64 +222,64 @@ def removeSignalFromList(amplitude, frequency, phase):
             the phase of the signal        
     """
 
-    for added_signal in added_signals_list:
-        if added_signal.amplitude == amplitude and added_signal.frequency == frequency and round(added_signal.phase / np.pi*180)  ==  phase :
-            added_signals_list.remove(added_signal)
+    for signal in added_signals_list:
+        if signal.amplitude == amplitude and signal.frequency == frequency and signal.phase == phase:
+            added_signals_list.remove(signal)
             return
+# ------------------------------------------------------------------------ #
+
+def clearAddedSignalsList():
+    added_signals_list.clear()
 
 # ---------------------------- Getter functions -------------------------- #
 
-def getSignalData(uploaded_signal):
-    """
-        get the main signal data
+# def getSignalData(uploaded_signal):
+#     """
+#         get the main signal data
 
-        Parameters
-        ----------
-        uploaded_signal : array of float
-            the uploaded signal if exists
+#         Parameters
+#         ----------
+#         uploaded_signal : array of float
+#             the uploaded signal if exists
 
-        Return
-        ----------
-        df : dataframe
-            dataframe of the main signal
+#         Return
+#         ----------
+#         df : dataframe
+#             dataframe of the main signal
            
-    """
-    if uploaded_signal is not None:
-        return pd.DataFrame(uploaded_signal, default_signal_time)
-    else:
-        return pd.DataFrame(generated_signal, default_signal_time)
+#     """
+#     if uploaded_signal is not None:
+#         return pd.DataFrame(uploaded_signal, default_signal_time)
+#     else:
+#         return pd.DataFrame(default_signal, default_signal_time)
 
 # ------------------------------------------------------------------------ #
 
 def getAddedSignalsList():
     return added_signals_list
 
+# ------------------------------------------------------------------------ #
+
+# def getTime():
+#     return default_signal_time
 
 # ------------------------------------------------------------------------ #
 
-def clearAddedSignalsList():
-    added_signals_list.clear()
+# def setGeneratedSignal(amplitude, frequency, phase):
+#     """
+#         set the generated signal
 
-# ------------------------------------------------------------------------ #
+#         Parameters
+#         ----------
+#         amplitude : float
+#             the amplitude of the signal
+#         frequency : float
+#             the frequancy of the signal
+#         phase : float
+#             the phase of the signal   
+#     """
+#     global default_signal
+#     generated_signal = amplitude * np.sin(2 * np.pi * frequency * default_signal_time +  phase*np.pi/180 )
 
-def getTime():
-    return default_signal_time
-
-# ------------------------------------------------------------------------ #
-
-def setGeneratedSignal(amplitude, frequency, phase):
-    """
-        set the generated signal
-
-        Parameters
-        ----------
-        amplitude : float
-            the amplitude of the signal
-        frequency : float
-            the frequancy of the signal
-        phase : float
-            the phase of the signal   
-    """
-    global generated_signal
-    generated_signal = amplitude * np.sin(2 * np.pi * frequency * default_signal_time +  phase*np.pi/180 )
-
+def getResultedSignal(signal):
+    return signal

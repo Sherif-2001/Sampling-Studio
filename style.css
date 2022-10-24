@@ -8,18 +8,16 @@
                 background-position: 4px 20px;
             } */
 
-
 /* Card */
 /* Adapted from https://startbootstrap.com/theme/sb-admin-2 */
 div.css-1r6slb0.e1tzin5v2 {
-  background-color: #FFFFFF;
-  border: 1px solid #CCCCCC;
+  background-color: #ffffff;
+  border: 1px solid #cccccc;
   padding: 5% 5% 5% 10%;
   border-radius: 5px;
 
-  border-left: 0.5rem solid #9AD8E1 !important;
+  border-left: 0.5rem solid #9ad8e1 !important;
   box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15) !important;
-
 }
 
 label.css-mkogse.e16fv1kl2 {
@@ -28,12 +26,10 @@ label.css-mkogse.e16fv1kl2 {
   text-transform: uppercase !important;
 }
 
-
 /* Move block container higher */
 div.block-container.css-18e3th9.egzxvld2 {
   margin-top: -5em;
 }
-
 
 /* Hide hamburger menu and footer */
 div.css-r698ls.e8zbici2 {
@@ -90,7 +86,6 @@ div.vg-tooltip-element {
 .block-container.css-128j0gw.egzxvld2 .stMarkdown h2 {
   font-size: 20px;
   font-weight: bold;
-
 }
 
 .css-pmxsec.exg6vvm0 {
@@ -98,11 +93,10 @@ div.vg-tooltip-element {
   font-size: 17px;
   font-family: "Work Sans", sans-serif;
   margin-left: -10px;
-
 }
 
 .page_titel {
-  font-family: 'Times New Roman', Times, serif;
+  font-family: "Times New Roman", Times, serif;
   font-size: 32px;
   font-weight: bolder;
 }
@@ -115,7 +109,7 @@ div.vg-tooltip-element {
 }
 
 .css-12oz5g7 .stMarkdown h3 {
-  font-family: 'Open Sans', Times, serif;
+  font-family: "Open Sans", Times, serif;
   font-size: 30px;
   font-weight: bold;
 }
@@ -161,7 +155,6 @@ h1 {
   user-select: none;
 }
 
-
 h2 {
   padding: 5px;
   user-select: none;
@@ -175,7 +168,6 @@ h2 {
   flex-direction: column;
   gap: 10px;
 }
-
 
 span {
   user-select: none;
@@ -221,4 +213,9 @@ span {
 
 .css-729dqf {
   display: none;
+}
+
+hr {
+  margin: inherit;
+  background-color: #ffffff;
 }
