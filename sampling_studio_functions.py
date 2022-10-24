@@ -71,9 +71,9 @@ def generateResultedSignal(is_noise_add, uploaded_signal, SNR = 1):
     """
 
     if uploaded_signal is not None:
-        temp_resulted_signal = uploaded_signal
+        temp_resulted_signal = uploaded_signal.copy()
     else:
-        temp_resulted_signal = default_signal
+        temp_resulted_signal = default_signal.copy()
 
     for signal in added_signals_list:
         temp_resulted_signal += signal.amplitude * np.sin(2 * np.pi * signal.frequency * default_signal_time + signal.phase * np.pi)
