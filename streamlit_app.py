@@ -1,5 +1,5 @@
 import streamlit as st
-import pandas as pd
+import scipy 
 import sampling_studio_functions as func
 import numpy as np
 import librosa, librosa.display
@@ -22,10 +22,6 @@ with Button_col:
 
 if file is not None:
     file_wav = librosa.load(file)
-    # print(file_wav)
-    # file_as_data_frame = pd.read_csv(file).values[:1000]
-    # file_as_flat_list = [
-    #     item for sublist in file_wav for item in sublist]
     file_as_array = np.asarray(file_wav[0])[:1000]
     func.set_signal_time(file_wav[1])
     
@@ -139,16 +135,22 @@ st.plotly_chart(fig, use_container_width=True)
 
 # ------------------------------------------------------------------------ #
 
-@st.cache
-def convert_df(downloaded_df):
-    # IMPORTANT: Cache the conversion to prevent computation on every rerun
-    return downloaded_df.to_csv().encode('utf-8')
+# @st.cache
+# def convert_df(downloaded_df):
 
-csv = convert_df(Reconstructed_signal)
+#     # IMPORTANT: Cache the conversion to prevent computation on every rerun
+#     scipy.io.wavfile.write('signal', sampling_rate, Reconstructed_signal)
+#     return downloaded_df.to_csv().encode('utf-8')
 
-st.download_button(
-    label="Download data as CSV",
-    data = csv,
-    file_name = 'signal.csv',
-    mime = 'text/csv',
-)
+# csv = convert_df(Reconstructed_signal)
+# print(np.array(Reconstructed_signal.index))
+
+# st.download_button(
+#     label="Download .wav file",
+#     data = scipy.io.wavfile.write('signal.wav', 22025, np.array(Reconstructed_signal.index).astype(np.float32)),
+#     file_name = 'signal.wav',
+#     mime = 'audio/wav',
+# )
+download = st.button('Download')
+if download:
+    scipy.io.wavfile.write('signal.wav', 22025, np.array(Reconstructed_signal.index).astype(np.float32))

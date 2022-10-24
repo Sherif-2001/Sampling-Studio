@@ -80,7 +80,7 @@ def generateResultedSignal(is_noise_add, uploaded_signal, SNR = 1):
 
     global resulted_signal
     if is_noise_add:
-        resulted_signal = temp_resulted_signal + generateNoise(SNR, uploaded_signal)
+        resulted_signal = temp_resulted_signal + generateNoise(SNR)
     else:
         resulted_signal = temp_resulted_signal
     return pd.DataFrame(resulted_signal, default_signal_time)
