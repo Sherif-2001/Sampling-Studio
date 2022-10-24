@@ -142,8 +142,11 @@ def interpolate(time_new, signal_time, signal_amplitude):
 # ------------------------------------------------------------------------ #
 def getMaxFrequancy():
     step_size = default_signal_time[1] - default_signal_time[0]
-    
-    f, t, Sxx = signal.spectrogram(resulted_signal, 1/step_size, return_onesided=False)
+    if resulted_signal is not None:
+        f, t, Sxx = signal.spectrogram(resulted_signal, 1/step_size, return_onesided=False)
+    else: 
+        f, t, Sxx = signal.spectrogram(default_signal, 1/step_size, return_onesided=False)
+
 
     f_max = np.argmax(f)
     return f_max
