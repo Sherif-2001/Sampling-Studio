@@ -140,6 +140,15 @@ def interpolate(time_new, signal_time, signal_amplitude):
     return new_Amplitude
   
 # ------------------------------------------------------------------------ #
+def getMaxFrequancy():
+    step_size = default_signal_time[1] - default_signal_time[0]
+    
+    f, t, Sxx = signal.spectrogram(resulted_signal, 1/step_size, return_onesided=False)
+
+    f_max = np.argmax(f)
+    return f_max
+# ------------------------------------------------------------------------ #
+
 def renderSampledSignal(nyquist_rate):
     """
         render sampled and interpolated signal
@@ -157,11 +166,7 @@ def renderSampledSignal(nyquist_rate):
             the resulted signal to be downloaded
     """
 
-    step_size = default_signal_time[1] - default_signal_time[0]
-    
-    f, t, Sxx = signal.spectrogram(resulted_signal, 1/step_size, return_onesided=False)
-
-    f_max = np.argmax(f)
+    f_max = getMaxFrequancy()
 
     time = np.arange(0,default_signal_time[-1],1/(nyquist_rate*f_max))
 

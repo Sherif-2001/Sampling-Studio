@@ -102,8 +102,19 @@ st.sidebar.markdown("***")
 
 # # Sampling
 st.sidebar.header('Sampling')
-sampling_rate = st.sidebar.slider(
-    'Factor Fs/Fmax', 0.5, 10.0, 2.0, 0.5, format="%f")
+Sample_label_col, Sample_checkbox_col = st.sidebar.columns(2)
+with Sample_label_col:
+    st.sidebar.subheader('Normalized')
+with Sample_checkbox_col:
+    normalized_sample_flag = st.checkbox("", True)
+if normalized_sample_flag:
+    sampling_rate = st.sidebar.slider(
+    'Nyquist rate Fs/Fmax', 0.5, 10.0, 2.0, 0.5, format="%f")
+else:
+    sampling_rate = st.sidebar.slider(
+    'Fs', 0.5, 5.0*func.getMaxFrequancy(), 2.0, 0.5, format="%f")
+
+
 
 # ------------------------------------------------------------------------ #
 st.sidebar.markdown("***")
