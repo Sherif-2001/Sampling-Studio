@@ -113,8 +113,8 @@ def interpolate(time_new, signal_time, signal_amplitude):
 
     # sinc interpolation
     sincM = np.tile(time_new, (len(signal_time), 1)) - np.tile(signal_time[:,np.newaxis], (1, len(time_new)))
-    new_Amplitude = np.dot(signal_amplitude, np.sinc(sincM/T))
-    return new_Amplitude
+    new_signal = np.dot(signal_amplitude, np.sinc(sincM/T))
+    return new_signal
   
 # ------------------------------------------------------------------------ #
 
@@ -162,8 +162,6 @@ def renderSampledSignal(nyquist_rate, normalized_sample_flag):
 
     fig.add_scatter(name="Signal",x=default_signal_time, y=resulted_signal, line_color='blue')
     # fig.update_traces(marker = {'size': 10},line_color = "#FF4B4B")
-
-
 
     fig.update_traces(marker = {'size': 10})
     fig.update_layout(showlegend=True,margin=dict(l=0, r=0, t=0, b=0),legend=dict(yanchor="top",y=0.99,xanchor="left",x=0.01))
@@ -220,27 +218,16 @@ def clearAddedSignalsList():
     if f_max <=20:
         f_max = 1
 
-# ---------------------------- Getter functions -------------------------- #
+# ------------------------------------------------------------------------ #
 
-# def getSignalData(uploaded_signal):
-#     """
-#         get the main signal data
+def reset_maximum_frequency():
+    f_maximum = 1
+    for signal in added_signals_list:
+        if signal.frequency > f_maximum:
+            f_maximum = signal.frequency
 
-#         Parameters
-#         ----------
-#         uploaded_signal : array of float
-#             the uploaded signal if exists
-
-#         Return
-#         ----------
-#         df : dataframe
-#             dataframe of the main signal
-           
-#     """
-#     if uploaded_signal is not None:
-#         return pd.DataFrame(uploaded_signal, default_signal_time)
-#     else:
-#         return pd.DataFrame(default_signal, default_signal_time)
+    global f_max
+    f_max = f_maximum
 
 # ------------------------------------------------------------------------ #
 

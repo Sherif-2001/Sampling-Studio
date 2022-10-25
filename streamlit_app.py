@@ -40,8 +40,10 @@ with noise_label_col:
     st.header('Noise')
 with noise_checkbox_col:
     noise_flag = st.checkbox("", False)
-    SNR_slider_value = st.sidebar.slider('SNR', 1, 100, 50)
-
+    if noise_flag:
+        SNR_slider_value = st.sidebar.slider('SNR', 1, 100, 50)
+    else:
+        SNR_slider_value =1
 # ------------------------------------------------------------------------ #
 st.sidebar.markdown("***")
 # ------------------------------------------------------------------------ #
@@ -102,7 +104,7 @@ st.sidebar.markdown("***")
 st.sidebar.header('Sampling')
 Sample_label_col, Sample_checkbox_col = st.sidebar.columns(2)
 with Sample_label_col:
-    st.sidebar.subheader('Normalized')
+    st.subheader('Normalized')
 with Sample_checkbox_col:
     normalized_sample_flag = st.checkbox("", True)
 if normalized_sample_flag:
@@ -124,7 +126,6 @@ st.markdown(website_title, unsafe_allow_html=True)
 # st.write("""### Reconstructed Signal""")
 functions.generateResultedSignal(noise_flag, file_as_array, SNR_slider_value)
 fig, Reconstructed_signal = functions.renderSampledSignal(sampling_rate, normalized_sample_flag)
-# fig.update_traces(line_color='#EAE3FF')f
 
 st.plotly_chart(fig, use_container_width=True)
 

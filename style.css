@@ -54,6 +54,10 @@ div.vg-tooltip-element {
   padding-right: 1rem;
 }
 
+.css-16u8z0w.edgvbvh9 {
+  margin-top: 0;
+}
+
 .css-1oyhl2h {
   display: flex;
   -webkit-box-align: center;
@@ -93,12 +97,14 @@ div.vg-tooltip-element {
   font-size: 17px;
   font-family: "Work Sans", sans-serif;
   margin-left: -10px;
+  margin-top: 15px;
 }
 
 .page_titel {
   font-family: "Times New Roman", Times, serif;
   font-size: 32px;
   font-weight: bolder;
+  user-select: none;
 }
 
 .css-12oz5g7 {
@@ -156,7 +162,7 @@ h1 {
 }
 
 h2 {
-  padding: 5px;
+  padding: 0px;
   user-select: none;
 }
 
@@ -193,8 +199,8 @@ span {
 
 .row-widget.stCheckbox {
   position: absolute;
-  left: -75%;
-  top: 5px;
+  left: -50%;
+  top: 1px;
 }
 
 .css-k3w14i {
@@ -221,6 +227,51 @@ hr {
 }
 
 h3 {
-  margin: 0px;
-  display: contents;
+  padding: 0;
+  padding-top: 3px;
+  user-select: none;
+}
+
+.css-hxt7ib.e1fqkh3o4 {
+  padding-top: 20px;
+}
+
+.block-container.css-128j0gw.egzxvld2 :only-child {
+  gap: 12px;
+}
+
+[data-baseweb="slider"] :nth-child(1) :not([data-testid="stTickBar"]) {
+  height: 10px;
+}
+
+[data-testid="stTickBar"] {
+  padding: 0;
+}
+
+[data-baseweb="slider"] {
+  padding-top: 5px;
+}
+
+.row-widget.stSelectbox label {
+  display: none;
+}
+
+.stSlider label {
+  user-select: none;
+}
+
+.css-1fv8s86.e16nr0p33 p {
+  user-select: none;
+}
+
+[data-testid="stSidebar"] {
+  min-width: 300px;
+}
+
+@media (max-width: 630px) {
+  .row-widget.stCheckbox {
+    position: absolute;
+    left: 100px;
+    top: -56px;
+  }
 }
