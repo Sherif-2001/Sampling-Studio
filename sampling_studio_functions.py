@@ -3,11 +3,11 @@ import pandas as pd
 from signal_class import Signal
 import plotly_express as px
 
-
 # ------------------------ Variables --------------------------- #
-default_signal_time = np.arange(0,1,0.001)
 
-default_signal = 1 * np.sin(2 * np.pi * 1 * default_signal_time) 
+# # Default Signal Params
+default_signal_time = np.arange(0,1,0.001)
+default_signal = 1 * np.sin(2 * np.pi * 1 * default_signal_time)
 f_max = 1
 
 resulted_signal = None
@@ -20,7 +20,7 @@ uploaded_signals_list = []
 def set_signal_time(Fs):
     global default_signal_time, f_max
     default_signal_time = np.arange(0,1000*1/Fs,1/Fs) 
-    f_max = Fs/2 
+    f_max = Fs/2
 
 def generateNoise(SNR):
     """
@@ -133,15 +133,13 @@ def renderSampledSignal(nyquist_rate, normalized_sample_flag):
         downloaded_df : Dataframe
             the resulted signal to be downloaded
     """
-    global f_max
     if normalized_sample_flag:
-
-        
         time = np.arange(0,default_signal_time[-1],1/(nyquist_rate*f_max))
     else:
         time = np.arange(0,default_signal_time[-1],1/(nyquist_rate))
 
-
+    # print(time)
+    
     ynew = interpolate(time, default_signal_time, resulted_signal)
 
     y_inter = interpolate(default_signal_time, time, ynew)
@@ -152,18 +150,29 @@ def renderSampledSignal(nyquist_rate, normalized_sample_flag):
                     x = time,
                     y = ynew,
                     labels={"x": "Time (s)","y": "Amplitude (mv)"},
-                    title="Resulted Signal",
-                    color_discrete_sequence=['#4558E8']
-        )
+                    color_discrete_sequence=['#FAFAFA'])
 
-    fig.add_scatter(x=default_signal_time, y=y_inter)
+    fig['data'][0]['showlegend'] = True
+    fig['data'][0]['name'] = 'Scattered'
+    fig.add_scatter(name="Interpolated",x=default_signal_time, y=y_inter)
 
-    fig.update_traces(marker = {'size': 6})
-    fig.update_layout(showlegend=False,margin=dict(l=0, r=0, t=0, b=0),autosize = True)
+    fig.update_traces(marker = {'size': 10},line_color = "#FF4B4B")
+    fig.update_layout(showlegend=True,margin=dict(l=0, r=0, t=0, b=0),legend=dict(yanchor="top",y=0.99,xanchor="left",x=0.01))
     fig.update_xaxes(showline=True, linewidth=2, linecolor='black', gridcolor='#5E5E5E', title_font = dict(size=24, family='Arial'))
     fig.update_yaxes(showline=True, linewidth=2, linecolor='black', gridcolor='#5E5E5E',title_font = dict(size=24, family='Arial'))
     
-    return  fig, df.drop(df.columns[[0]],axis = 1)
+    return fig, df.drop(df.columns[[0]],axis = 1)
+
+# ------------------------------------------------------------------------ #
+
+def reset_maximum_frequency():
+    f_maximum = 1
+    for signal in added_signals_list:
+        if signal.frequency > f_maximum:
+            f_maximum = signal.frequency
+
+    global f_max
+    f_max = f_maximum
 
 # ------------------------------------------------------------------------ #
 
@@ -180,9 +189,10 @@ def addSignalToList(amplitude, frequency, phase):
         phase : float
             the phase of the signal        
     """
-    global f_max
 
     added_signals_list.append(Signal(amplitude = amplitude, frequency = frequency, phase = phase))
+
+    global f_max
     f_max = max(f_max,frequency)
 
 # ------------------------------------------------------------------------ #
@@ -204,11 +214,14 @@ def removeSignalFromList(amplitude, frequency, phase):
     for signal in added_signals_list:
         if signal.amplitude == amplitude and signal.frequency == frequency and signal.phase == phase:
             added_signals_list.remove(signal)
-            return
+            break
+    reset_maximum_frequency()
+
 # ------------------------------------------------------------------------ #
 
 def clearAddedSignalsList():
     added_signals_list.clear()
+    reset_maximum_frequency()
 
 # ---------------------------- Getter functions -------------------------- #
 
@@ -262,3 +275,11 @@ def getAddedSignalsList():
 
 def getResultedSignal(signal):
     return signal
+
+# ------------------------------------------------------------------------ #
+
+# def reset():
+#     global default_signal,default_signal_time,f_max
+#     default_signal_time = np.arange(0,1,0.001)
+#     default_signal = 1 * np.sin(2 * np.pi * 1 * default_signal_time)
+#     f_max = 1

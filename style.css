@@ -219,3 +219,8 @@ hr {
   margin: inherit;
   background-color: #ffffff;
 }
+
+h3 {
+  margin: 0px;
+  display: contents;
+}
