@@ -215,6 +215,7 @@ def removeSignalFromList(amplitude, frequency, phase):
 
 def clearAddedSignalsList():
     added_signals_list.clear()
+    global f_max
     if f_max <=20:
         f_max = 1
 

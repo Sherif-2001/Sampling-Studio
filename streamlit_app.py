@@ -93,6 +93,7 @@ with remove_button_col:
 with clear_button_col:
     clear_signals_button = st.button("Clear",key="clear_button",disabled=len(functions.getAddedSignalsList()) <= 0)
     if clear_signals_button:
+        functions.reset()
         functions.clearAddedSignalsList()
         st.experimental_rerun()
 
