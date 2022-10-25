@@ -116,7 +116,7 @@ else:
     'Fs', max(1.5,ceil(functions.f_max*0.5)*1.0), 5.0*functions.f_max, 2.0*float(functions.f_max), 0.5, format="%f")
 
 # ------------------------------------------------------------------------ #
-st.sidebar.markdown("***")
+# st.sidebar.markdown("***")
 
 # ----------------------- Main Window Elements --------------------------- #
 
@@ -133,10 +133,10 @@ st.plotly_chart(fig, use_container_width=True)
 # ------------------------------------------------------------------------ #
 
 # # Download the sampled signal
-st.sidebar.subheader("Download")
-download = st.sidebar.button('Download Sampled Signal')
+
+download = st.button('Download Sampled Signal')
 if download:
-    st.sidebar.success("Downloaded to C:\Sampling Studio")
+    st.success("Downloaded to C:\Sampling Studio")
     try:
         scipy.io.wavfile.write('signal.wav', 22025, np.array(Reconstructed_signal.index).astype(np.float32))
     except:
@@ -145,8 +145,8 @@ if download:
         scipy.io.wavfile.write('signal.wav', 22025, np.array(Reconstructed_signal.index).astype(np.float32))
 
 # ------------------------------------------------------------------------ #
-st.sidebar.markdown("***")
+# st.sidebar.markdown("***")
 # ------------------------------------------------------------------------ #
 
 # # Sidebar bottom
-st.sidebar.markdown('''© 2022 SBME All rights reserved.''')
+# st.sidebar.markdown('''© 2022 SBME All rights reserved.''')
