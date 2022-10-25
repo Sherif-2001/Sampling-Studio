@@ -26,6 +26,9 @@ if file is not None:
     file_wav = librosa.load(file)
     file_as_array = np.asarray(file_wav[0])[:1000]
     functions.set_signal_time(file_wav[1])
+else: 
+    functions.reset()
+ 
     
 # ------------------------------------------------------------------------ #
 st.sidebar.markdown("***")
@@ -133,11 +136,11 @@ download = st.sidebar.button('Download Sampled Signal')
 if download:
     st.sidebar.success("Downloaded to C:\Sampling Studio")
     try:
-        scipy.io.wavfile.write('C:/Sampling Studio/signal.wav', 22025, np.array(Reconstructed_signal.index).astype(np.float32))
+        scipy.io.wavfile.write('signal.wav', 22025, np.array(Reconstructed_signal.index).astype(np.float32))
     except:
         os.chdir("C:/")
         os.makedirs("Sampling Studio")
-        scipy.io.wavfile.write('C:/Sampling Studio/signal.wav', 22025, np.array(Reconstructed_signal.index).astype(np.float32))
+        scipy.io.wavfile.write('signal.wav', 22025, np.array(Reconstructed_signal.index).astype(np.float32))
 
 # ------------------------------------------------------------------------ #
 st.sidebar.markdown("***")
