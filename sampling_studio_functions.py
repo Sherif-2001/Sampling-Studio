@@ -23,7 +23,7 @@ uploaded_signals_list = []
 def set_signal_time(Fs):
     global default_signal_time, f_max
     default_signal_time = np.arange(0,1000*1/Fs,1/Fs) 
-    f_max = Fs/2 
+    f_max = Fs/4
 
 def generateNoise(SNR):
     """

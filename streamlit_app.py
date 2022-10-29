@@ -55,7 +55,7 @@ signal_amplitude_slider_col1, signal_frequency_slider_col2 = st.sidebar.columns(
 
 with signal_amplitude_slider_col1:
     signal_amplitude_slider = st.slider(
-        'Amplitude', 0.0, 1.0, 0.5, 0.01, format="%f")
+        'Amplitude', 0.0, 1.0, 0.0, 0.01, format="%f")
 
 with signal_frequency_slider_col2:
     signal_frequancy_slider = st.slider(
