@@ -15,6 +15,8 @@ resulted_signal = None
 
 added_signals_list = []
 
+generated_sin = None
+
 uploaded_signals_list = []
 # ------------------------ Modifying Functions --------------------------- #
 
@@ -156,11 +158,12 @@ def renderSampledSignal(nyquist_rate, normalized_sample_flag):
                     color_discrete_sequence=['#FAFAFA'])
 
     fig['data'][0]['showlegend'] = True
-    fig['data'][0]['name'] = 'Scattered'
+    fig['data'][0]['name'] = 'Samples'
     fig.add_scatter(name="Interpolated",x=default_signal_time, y=y_inter, line_color = "#FF4B4B")
     fig.update_traces(marker = {'size': 10},line_color = "#FF4B4B")
 
     fig.add_scatter(name="Signal",x=default_signal_time, y=resulted_signal, line_color='blue')
+    fig.add_scatter(name='New Signal',x=default_signal_time, y=generated_sin, line_color='yellow'  )
     # fig.update_traces(marker = {'size': 10},line_color = "#FF4B4B")
 
     fig.update_traces(marker = {'size': 10})
@@ -171,6 +174,15 @@ def renderSampledSignal(nyquist_rate, normalized_sample_flag):
     return fig, df.drop(df.columns[[0]],axis = 1)
 
 # ------------------------------------------------------------------------ #
+def generate_sinusoidal(amplitude, frequency, phase):
+    global generated_sin
+
+    generated_sin = amplitude * np.sin(2 * np.pi * frequency * default_signal_time + phase * np.pi)
+
+    
+
+# ------------------------------------------------------------------------ #
+
 
 def addSignalToList(amplitude, frequency, phase):
     """
@@ -189,6 +201,7 @@ def addSignalToList(amplitude, frequency, phase):
 
     added_signals_list.append(Signal(amplitude = amplitude, frequency = frequency, phase = phase))
     f_max = max(f_max,frequency)
+
 
 # ------------------------------------------------------------------------ #
 

@@ -123,7 +123,7 @@ else:
 website_title = '<p class="page_titel", style="font-family:Arial">Sampling Studio</p>'
 st.markdown(website_title, unsafe_allow_html=True)
 # ------------------------------------------------------------------------ #
-
+functions.generate_sinusoidal(signal_amplitude_slider, signal_frequancy_slider, signal_phase_slider)
 # st.write("""### Reconstructed Signal""")
 functions.generateResultedSignal(noise_flag, file_as_array, SNR_slider_value)
 fig, Reconstructed_signal = functions.renderSampledSignal(sampling_rate, normalized_sample_flag)
