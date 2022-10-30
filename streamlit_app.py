@@ -2,7 +2,8 @@ from math import ceil
 import streamlit as st
 import scipy.io
 import numpy as np
-import librosa, librosa.display
+import librosa
+import librosa.display
 import os
 import sampling_studio_functions as functions
 
@@ -20,16 +21,16 @@ with label_col:
     st.markdown("## Upload Signal")
 with Button_col:
     file = st.file_uploader(
-        "", type="wav", accept_multiple_files = False)
+        "", type="wav", accept_multiple_files=False)
 
 if file is not None:
     file_wav = librosa.load(file)
     file_as_array = np.asarray(file_wav[0])[:1000]
     functions.set_signal_time(file_wav[1])
-else: 
+else:
     functions.reset()
- 
-    
+
+
 # ------------------------------------------------------------------------ #
 st.sidebar.markdown("***")
 # ------------------------------------------------------------------------ #
@@ -43,7 +44,7 @@ with noise_checkbox_col:
     if noise_flag:
         SNR_slider_value = st.sidebar.slider('SNR', 1, 100, 50)
     else:
-        SNR_slider_value =1
+        SNR_slider_value = 1
 # ------------------------------------------------------------------------ #
 st.sidebar.markdown("***")
 # ------------------------------------------------------------------------ #
@@ -51,7 +52,8 @@ st.sidebar.markdown("***")
 # # Add signals to the original signal
 st.sidebar.header('Add Signals')
 
-signal_amplitude_slider_col1, signal_frequency_slider_col2 = st.sidebar.columns(2)
+signal_amplitude_slider_col1, signal_frequency_slider_col2 = st.sidebar.columns(
+    2)
 
 with signal_amplitude_slider_col1:
     signal_amplitude_slider = st.slider(
@@ -66,7 +68,8 @@ signal_phase_slider = st.sidebar.slider(
 
 add_signal_button = st.sidebar.button("Add Signal...", key="add_button")
 if add_signal_button:
-    functions.addSignalToList(signal_amplitude_slider, signal_frequancy_slider, signal_phase_slider)
+    functions.addSignalToList(signal_amplitude_slider,
+                              signal_frequancy_slider, signal_phase_slider)
 
 # ------------------------------------------------------------------------ #
 
@@ -85,20 +88,23 @@ if len(selected_signal_split) != 1:
 # # Remove and clear signals from selectbox
 remove_button_col, clear_button_col = st.sidebar.columns(2)
 with remove_button_col:
-    remove_signal_button = st.button("Remove",key="remove_button",disabled=len(functions.getAddedSignalsList()) <= 0)
+    remove_signal_button = st.button("Remove", key="remove_button", disabled=len(
+        functions.getAddedSignalsList()) <= 0)
     if remove_signal_button:
-        functions.removeSignalFromList(amplitude = amplitude_slider, frequency = frequency_slider, phase = phase_slider)
+        functions.removeSignalFromList(
+            amplitude=amplitude_slider, frequency=frequency_slider, phase=phase_slider)
         st.experimental_rerun()
 
 with clear_button_col:
-    clear_signals_button = st.button("Clear",key="clear_button",disabled=len(functions.getAddedSignalsList()) <= 0)
+    clear_signals_button = st.button("Clear", key="clear_button", disabled=len(
+        functions.getAddedSignalsList()) <= 0)
     if clear_signals_button:
         functions.reset()
         functions.clearAddedSignalsList()
         st.experimental_rerun()
 
 # ------------------------------------------------------------------------ #
-st.sidebar.markdown("***") 
+st.sidebar.markdown("***")
 # ------------------------------------------------------------------------ #
 
 # # Sampling
@@ -110,10 +116,10 @@ with Sample_checkbox_col:
     normalized_sample_flag = st.checkbox("", True)
 if normalized_sample_flag:
     sampling_rate = st.sidebar.slider(
-    'Nyquist rate Fs/Fmax', 1.5, 10.0, 2.0, 0.5, format="%f")
+        'Nyquist rate Fs/Fmax', 1.5, 10.0, 2.0, 0.5, format="%f")
 else:
     sampling_rate = st.sidebar.slider(
-    'Fs', max(1.5,ceil(functions.f_max*0.5)*1.0), 5.0*functions.f_max, 2.0*float(functions.f_max), 0.5, format="%f")
+        'Fs', max(1.5, ceil(functions.f_max*0.5)*1.0), 5.0*functions.f_max, 2.0*float(functions.f_max), 0.5, format="%f")
 
 # ------------------------------------------------------------------------ #
 # st.sidebar.markdown("***")
@@ -123,10 +129,12 @@ else:
 website_title = '<p class="page_titel", style="font-family:Arial">Sampling Studio</p>'
 st.markdown(website_title, unsafe_allow_html=True)
 # ------------------------------------------------------------------------ #
-functions.generate_sinusoidal(signal_amplitude_slider, signal_frequancy_slider, signal_phase_slider)
+functions.generate_sinusoidal(
+    signal_amplitude_slider, signal_frequancy_slider, signal_phase_slider)
 # st.write("""### Reconstructed Signal""")
 functions.generateResultedSignal(noise_flag, file_as_array, SNR_slider_value)
-fig, Reconstructed_signal = functions.renderSampledSignal(sampling_rate, normalized_sample_flag)
+fig, Reconstructed_signal = functions.renderSampledSignal(
+    sampling_rate, normalized_sample_flag)
 
 st.plotly_chart(fig, use_container_width=True)
 
@@ -134,15 +142,17 @@ st.plotly_chart(fig, use_container_width=True)
 
 # # Download the sampled signal
 
-download = st.button('Download Sampled Signal')
+download = st.sidebar.button('Download Sampled Signal')
 if download:
-    st.success("Downloaded to C:\Sampling Studio")
+    st.sidebar.success("Downloaded to C:\Sampling Studio")
     try:
-        scipy.io.wavfile.write('signal.wav', 22025, np.array(Reconstructed_signal.index).astype(np.float32))
+        scipy.io.wavfile.write('signal.wav', 22025, np.array(
+            Reconstructed_signal.index).astype(np.float32))
     except:
         os.chdir("C:/")
         os.makedirs("Sampling Studio")
-        scipy.io.wavfile.write('signal.wav', 22025, np.array(Reconstructed_signal.index).astype(np.float32))
+        scipy.io.wavfile.write('signal.wav', 22025, np.array(
+            Reconstructed_signal.index).astype(np.float32))
 
 # ------------------------------------------------------------------------ #
 # st.sidebar.markdown("***")
