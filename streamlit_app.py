@@ -34,14 +34,17 @@ else:
 # ------------------------------------------------------------------------ #
 st.sidebar.markdown("***")
 # ------------------------------------------------------------------------ #
+
 # # Add noise to signal
-
-noise_flag = st.sidebar.checkbox("Noise", False)
-if noise_flag:
-    SNR_slider_value = st.sidebar.slider('SNR', 1, 100,50)
-else:
-    SNR_slider_value = 1
-
+noise_label_col, noise_checkbox_col = st.sidebar.columns(2)
+with noise_label_col:
+    st.header('Noise')
+with noise_checkbox_col:
+    noise_flag = st.checkbox("", False)
+    if noise_flag:
+        SNR_slider_value = st.sidebar.slider('SNR', 1, 100, 50)
+    else:
+        SNR_slider_value = 1
 # ------------------------------------------------------------------------ #
 st.sidebar.markdown("***")
 # ------------------------------------------------------------------------ #
@@ -49,22 +52,24 @@ st.sidebar.markdown("***")
 # # Add signals to the original signal
 st.sidebar.header('Add Signals')
 
-signal_frequency_slider_col,signal_amplitude_slider_col = st.sidebar.columns(2)
+signal_amplitude_slider_col1, signal_frequency_slider_col2 = st.sidebar.columns(
+    2)
 
-with signal_frequency_slider_col:
-    signal_frequancy_slider = st.slider(
-        'Frequency', 0.5, 20.0, 10.0, 0.1, format="%f")
-
-with signal_amplitude_slider_col:
+with signal_amplitude_slider_col1:
     signal_amplitude_slider = st.slider(
         'Amplitude', 0.0, 1.0, 0.0, 0.01, format="%f")
+
+with signal_frequency_slider_col2:
+    signal_frequancy_slider = st.slider(
+        'Frequency', 0.5, 20.0, 10.0, 0.1, format="%f")
 
 signal_phase_slider = st.sidebar.slider(
     'Phase', 0.0, 2.0, 0.0, 0.1, format="%fπ")
 
-add_signal_button = st.sidebar.button("Add Signal", key="add_button")
+add_signal_button = st.sidebar.button("Add Signal...", key="add_button")
 if add_signal_button:
-    functions.addSignalToList(signal_amplitude_slider, signal_frequancy_slider, signal_phase_slider)
+    functions.addSignalToList(signal_amplitude_slider,
+                              signal_frequancy_slider, signal_phase_slider)
 
 # ------------------------------------------------------------------------ #
 
@@ -104,15 +109,20 @@ st.sidebar.markdown("***")
 
 # # Sampling
 st.sidebar.header('Sampling')
-normalized_sample_flag = st.sidebar.checkbox("Normalized", True)
+Sample_label_col, Sample_checkbox_col = st.sidebar.columns(2)
+with Sample_label_col:
+    st.subheader('Normalized')
+with Sample_checkbox_col:
+    normalized_sample_flag = st.checkbox("", True)
 if normalized_sample_flag:
     sampling_rate = st.sidebar.slider(
-        'Nyquist rate Fs/Fmax', 1.5, 10.0, 2.5, 0.5, format="%f")
+        'Nyquist rate Fs/Fmax', 1.5, 10.0, 2.0, 0.5, format="%f")
 else:
     sampling_rate = st.sidebar.slider(
         'Fs', max(1.5, ceil(functions.f_max*0.5)*1.0), 5.0*functions.f_max, 2.0*float(functions.f_max), 0.5, format="%f")
 
 # ------------------------------------------------------------------------ #
+# st.sidebar.markdown("***")
 
 # ----------------------- Main Window Elements --------------------------- #
 
@@ -134,7 +144,19 @@ st.plotly_chart(fig, use_container_width=True)
 
 download = st.sidebar.button('Download Sampled Signal')
 if download:
-    st.sidebar.success("Downloaded")
-    scipy.io.wavfile.write('signal.wav', 22025, np.array(
+    st.sidebar.success("Downloaded to C:\Sampling Studio")
+    try:
+        scipy.io.wavfile.write('signal.wav', 22025, np.array(
             Reconstructed_signal.index).astype(np.float32))
- 
+    except:
+        os.chdir("C:/")
+        os.makedirs("Sampling Studio")
+        scipy.io.wavfile.write('signal.wav', 22025, np.array(
+            Reconstructed_signal.index).astype(np.float32))
+
+# ------------------------------------------------------------------------ #
+# st.sidebar.markdown("***")
+# ------------------------------------------------------------------------ #
+
+# # Sidebar bottom
+# st.sidebar.markdown('''© 2022 SBME All rights reserved.''')

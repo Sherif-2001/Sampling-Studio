@@ -7,26 +7,25 @@ import plotly_express as px
 # ------------------------ Variables --------------------------- #
 default_signal_time = np.arange(0, 1, 0.001)
 
-default_signal = np.zeros(len(default_signal_time));
+default_signal = 1 * np.sin(2 * np.pi * 1 * default_signal_time)
+
 f_max = 1
 
 resulted_signal = None
 
-added_signals_list = [Signal(amplitude=1,frequency=1,phase = 0)]
+added_signals_list = []
 
 generated_sin = None
 
 uploaded_signals_list = []
-
-stored_snr = 50
-
 # ------------------------ Modifying Functions --------------------------- #
 
 
 def set_signal_time(Fs):
     global default_signal_time, f_max
     default_signal_time = np.arange(0, 1000*1/Fs, 1/Fs)
-    f_max = Fs/14
+    f_max = Fs/4
+
 
 def generateNoise(SNR):
     """
@@ -46,11 +45,14 @@ def generateNoise(SNR):
     """
 
     temp_signal = resulted_signal
-    signal_power = temp_signal ** 2   
-    signal_average_power = np.mean(signal_power)
-    noise_power = signal_average_power/SNR
+    SNR_db = 10 * np.log10(SNR)
+    power = temp_signal ** 2
+    signal_average_power = np.mean(power)
+    signal_average_power_db = 10 * np.log10(signal_average_power)
+    noise_db = signal_average_power_db - SNR_db
+    noise_watts = 10 ** (noise_db/10)
 
-    noise = np.random.normal(0, np.sqrt(noise_power), len(temp_signal))
+    noise = np.random.normal(0, np.sqrt(noise_watts), len(temp_signal))
     return noise
 
 # ------------------------------------------------------------------------ #
@@ -169,8 +171,10 @@ def renderSampledSignal(nyquist_rate, normalized_sample_flag):
 
     fig.add_scatter(name="Signal", x=default_signal_time,
                     y=resulted_signal, line_color='blue')
-    fig.add_scatter(name='Generated Signal', x=default_signal_time,
-                    y=generated_sin, line_color='yellow', visible="legendonly")
+    fig.add_scatter(name='New Signal', x=default_signal_time,
+                    y=generated_sin, line_color='yellow')
+    # fig.update_traces(marker = {'size': 10},line_color = "#FF4B4B")
+
     fig.update_traces(marker={'size': 10})
     fig.update_layout(showlegend=True, margin=dict(l=0, r=0, t=0, b=0), legend=dict(
         yanchor="top", y=0.99, xanchor="left", x=0.01))
@@ -235,7 +239,6 @@ def removeSignalFromList(amplitude, frequency, phase):
             added_signals_list.remove(signal)
     if f_max == frequency:
         reset_maximum_frequency()
-
 # ------------------------------------------------------------------------ #
 
 
@@ -265,6 +268,27 @@ def getAddedSignalsList():
 
 # ------------------------------------------------------------------------ #
 
+# def getTime():
+#     return default_signal_time
+
+# ------------------------------------------------------------------------ #
+
+# def setGeneratedSignal(amplitude, frequency, phase):
+#     """
+#         set the generated signal
+
+#         Parameters
+#         ----------
+#         amplitude : float
+#             the amplitude of the signal
+#         frequency : float
+#             the frequancy of the signal
+#         phase : float
+#             the phase of the signal
+#     """
+#     global default_signal
+#     generated_signal = amplitude * np.sin(2 * np.pi * frequency * default_signal_time +  phase*np.pi/180 )
+
 
 def reset_maximum_frequency():
     f_maximum = 1
@@ -275,13 +299,9 @@ def reset_maximum_frequency():
     global f_max
     f_max = f_maximum
 
-# ------------------------------------------------------------------------ #
-
 
 def getResultedSignal(signal):
     return signal
-
-# ------------------------------------------------------------------------ #
 
 
 def reset():
@@ -290,15 +310,3 @@ def reset():
     f_max = 1
     for signal in added_signals_list:
         f_max = max(f_max, signal.frequency)
-
-# ------------------------------------------------------------------------ #
-
-def set_stored_snr(snr):
-    global stored_snr
-    stored_snr = snr
-
-# ------------------------------------------------------------------------ #
-
-def get_stored_snr():
-    global stored_snr
-    return stored_snr
