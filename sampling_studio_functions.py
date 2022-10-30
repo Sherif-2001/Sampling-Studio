@@ -5,25 +5,28 @@ import plotly_express as px
 
 
 # ------------------------ Variables --------------------------- #
-default_signal_time = np.arange(0,1,0.001)
+default_signal_time = np.arange(0, 1, 0.001)
 
-default_signal = 1 * np.sin(2 * np.pi * 1 * default_signal_time) 
-
+default_signal = np.zeros(len(default_signal_time));
 f_max = 1
 
 resulted_signal = None
 
-added_signals_list = []
+added_signals_list = [Signal(amplitude=1,frequency=1,phase = 0)]
 
 generated_sin = None
 
 uploaded_signals_list = []
+
+stored_snr = 50
+
 # ------------------------ Modifying Functions --------------------------- #
+
 
 def set_signal_time(Fs):
     global default_signal_time, f_max
-    default_signal_time = np.arange(0,1000*1/Fs,1/Fs) 
-    f_max = Fs/4
+    default_signal_time = np.arange(0, 1000*1/Fs, 1/Fs)
+    f_max = Fs/14
 
 def generateNoise(SNR):
     """
@@ -43,18 +46,17 @@ def generateNoise(SNR):
     """
 
     temp_signal = resulted_signal
-    SNR_db = 10 * np.log10(SNR)
-    power = temp_signal ** 2
-    signal_average_power= np.mean(power)
-    signal_average_power_db = 10 * np.log10(signal_average_power)
-    noise_db = signal_average_power_db - SNR_db
-    noise_watts = 10 ** (noise_db/10)
+    signal_power = temp_signal ** 2   
+    signal_average_power = np.mean(signal_power)
+    noise_power = signal_average_power/SNR
 
-    noise = np.random.normal(0,np.sqrt(noise_watts), len(temp_signal))
+    noise = np.random.normal(0, np.sqrt(noise_power), len(temp_signal))
     return noise
 
 # ------------------------------------------------------------------------ #
-def generateResultedSignal(is_noise_add, uploaded_signal, SNR = 1):
+
+
+def generateResultedSignal(is_noise_add, uploaded_signal, SNR=1):
     """
         Render the resulted signal
 
@@ -79,7 +81,9 @@ def generateResultedSignal(is_noise_add, uploaded_signal, SNR = 1):
         temp_resulted_signal = default_signal.copy()
 
     for signal in added_signals_list:
-        temp_resulted_signal += signal.amplitude * np.sin(2 * np.pi * signal.frequency * default_signal_time + signal.phase * np.pi)
+        temp_resulted_signal += signal.amplitude * \
+            np.sin(2 * np.pi * signal.frequency *
+                   default_signal_time + signal.phase * np.pi)
 
     global resulted_signal
     if is_noise_add:
@@ -114,11 +118,13 @@ def interpolate(time_new, signal_time, signal_amplitude):
     T = signal_time[1] - signal_time[0]
 
     # sinc interpolation
-    sincM = np.tile(time_new, (len(signal_time), 1)) - np.tile(signal_time[:,np.newaxis], (1, len(time_new)))
+    sincM = np.tile(time_new, (len(signal_time), 1)) - \
+        np.tile(signal_time[:, np.newaxis], (1, len(time_new)))
     new_signal = np.dot(signal_amplitude, np.sinc(sincM/T))
     return new_signal
-  
+
 # ------------------------------------------------------------------------ #
+
 
 def renderSampledSignal(nyquist_rate, normalized_sample_flag):
     """
@@ -139,47 +145,51 @@ def renderSampledSignal(nyquist_rate, normalized_sample_flag):
     global f_max
     if normalized_sample_flag:
 
-        
-        time = np.arange(0,default_signal_time[-1],1/(nyquist_rate*f_max))
+        time = np.arange(0, default_signal_time[-1], 1/(nyquist_rate*f_max))
     else:
-        time = np.arange(0,default_signal_time[-1],1/(nyquist_rate))
-
+        time = np.arange(0, default_signal_time[-1], 1/(nyquist_rate))
 
     ynew = interpolate(time, default_signal_time, resulted_signal)
 
     y_inter = interpolate(default_signal_time, time, ynew)
 
-    #Plot
+    # Plot
     df = pd.DataFrame(default_signal_time, y_inter)
     fig = px.scatter(
-                    x = time,
-                    y = ynew,
-                    labels={"x": "Time (s)","y": "Amplitude (mv)"},
-                    color_discrete_sequence=['#FAFAFA'])
+        x=time,
+        y=ynew,
+        labels={"x": "Time (s)", "y": "Amplitude (mv)"},
+        color_discrete_sequence=['#FAFAFA'])
 
     fig['data'][0]['showlegend'] = True
     fig['data'][0]['name'] = 'Samples'
-    fig.add_scatter(name="Interpolated",x=default_signal_time, y=y_inter, line_color = "#FF4B4B")
-    fig.update_traces(marker = {'size': 10},line_color = "#FF4B4B")
+    fig.add_scatter(name="Interpolated", x=default_signal_time,
+                    y=y_inter, line_color="#FF4B4B")
+    fig.update_traces(marker={'size': 10}, line_color="#FF4B4B")
 
-    fig.add_scatter(name="Signal",x=default_signal_time, y=resulted_signal, line_color='blue')
-    fig.add_scatter(name='New Signal',x=default_signal_time, y=generated_sin, line_color='yellow'  )
-    # fig.update_traces(marker = {'size': 10},line_color = "#FF4B4B")
+    fig.add_scatter(name="Signal", x=default_signal_time,
+                    y=resulted_signal, line_color='blue')
+    fig.add_scatter(name='Generated Signal', x=default_signal_time,
+                    y=generated_sin, line_color='yellow', visible="legendonly")
+    fig.update_traces(marker={'size': 10})
+    fig.update_layout(showlegend=True, margin=dict(l=0, r=0, t=0, b=0), legend=dict(
+        yanchor="top", y=0.99, xanchor="left", x=0.01))
+    fig.update_xaxes(showline=True, linewidth=2, linecolor='black',
+                     gridcolor='#5E5E5E', title_font=dict(size=24, family='Arial'))
+    fig.update_yaxes(showline=True, linewidth=2, linecolor='black',
+                     gridcolor='#5E5E5E', title_font=dict(size=24, family='Arial'))
 
-    fig.update_traces(marker = {'size': 10})
-    fig.update_layout(showlegend=True,margin=dict(l=0, r=0, t=0, b=0),legend=dict(yanchor="top",y=0.99,xanchor="left",x=0.01))
-    fig.update_xaxes(showline=True, linewidth=2, linecolor='black', gridcolor='#5E5E5E', title_font = dict(size=24, family='Arial'))
-    fig.update_yaxes(showline=True, linewidth=2, linecolor='black', gridcolor='#5E5E5E',title_font = dict(size=24, family='Arial'))
-    
-    return fig, df.drop(df.columns[[0]],axis = 1)
+    return fig, df.drop(df.columns[[0]], axis=1)
 
 # ------------------------------------------------------------------------ #
+
+
 def generate_sinusoidal(amplitude, frequency, phase):
     global generated_sin
 
-    generated_sin = amplitude * np.sin(2 * np.pi * frequency * default_signal_time + phase * np.pi)
+    generated_sin = amplitude * \
+        np.sin(2 * np.pi * frequency * default_signal_time + phase * np.pi)
 
-    
 
 # ------------------------------------------------------------------------ #
 
@@ -199,8 +209,9 @@ def addSignalToList(amplitude, frequency, phase):
     """
     global f_max
 
-    added_signals_list.append(Signal(amplitude = amplitude, frequency = frequency, phase = phase))
-    f_max = max(f_max,frequency)
+    added_signals_list.append(
+        Signal(amplitude=amplitude, frequency=frequency, phase=phase))
+    f_max = max(f_max, frequency)
 
 
 # ------------------------------------------------------------------------ #
@@ -224,15 +235,18 @@ def removeSignalFromList(amplitude, frequency, phase):
             added_signals_list.remove(signal)
     if f_max == frequency:
         reset_maximum_frequency()
+
 # ------------------------------------------------------------------------ #
+
 
 def clearAddedSignalsList():
     added_signals_list.clear()
     global f_max
-    if f_max <=20:
+    if f_max <= 20:
         f_max = 1
 
 # ------------------------------------------------------------------------ #
+
 
 def reset_maximum_frequency():
     f_maximum = 1
@@ -244,32 +258,13 @@ def reset_maximum_frequency():
     f_max = f_maximum
 
 # ------------------------------------------------------------------------ #
+
 
 def getAddedSignalsList():
     return added_signals_list
 
 # ------------------------------------------------------------------------ #
 
-# def getTime():
-#     return default_signal_time
-
-# ------------------------------------------------------------------------ #
-
-# def setGeneratedSignal(amplitude, frequency, phase):
-#     """
-#         set the generated signal
-
-#         Parameters
-#         ----------
-#         amplitude : float
-#             the amplitude of the signal
-#         frequency : float
-#             the frequancy of the signal
-#         phase : float
-#             the phase of the signal   
-#     """
-#     global default_signal
-#     generated_signal = amplitude * np.sin(2 * np.pi * frequency * default_signal_time +  phase*np.pi/180 )
 
 def reset_maximum_frequency():
     f_maximum = 1
@@ -280,13 +275,30 @@ def reset_maximum_frequency():
     global f_max
     f_max = f_maximum
 
+# ------------------------------------------------------------------------ #
+
+
 def getResultedSignal(signal):
     return signal
 
+# ------------------------------------------------------------------------ #
+
+
 def reset():
-    global default_signal_time , f_max
-    default_signal_time = np.arange(0,1,0.001)
+    global default_signal_time, f_max
+    default_signal_time = np.arange(0, 1, 0.001)
     f_max = 1
     for signal in added_signals_list:
         f_max = max(f_max, signal.frequency)
 
+# ------------------------------------------------------------------------ #
+
+def set_stored_snr(snr):
+    global stored_snr
+    stored_snr = snr
+
+# ------------------------------------------------------------------------ #
+
+def get_stored_snr():
+    global stored_snr
+    return stored_snr
