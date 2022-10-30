@@ -97,7 +97,7 @@ div.vg-tooltip-element {
   font-size: 17px;
   font-family: "Work Sans", sans-serif;
   margin-left: -10px;
-  margin-top: 15px;
+  margin-top: -15px;
 }
 
 .page_titel {
@@ -275,32 +275,35 @@ h3 {
     top: -56px;
   }
 }
-.main.css-kivhr4.egzxvld3 .block-container.css-12025g7.egzxvld2 :last-child button{
-  Position: absolute;
-  Left: calc(50% - 90px);
-  Top:70px;
-  Padding: 5px;
+.main.css-kivhr4.egzxvld3
+  .block-container.css-12025g7.egzxvld2
+  :last-child
+  button {
+  position: absolute;
+  left: calc(50% - 90px);
+  top: 70px;
+  padding: 5px;
   margin-top: 2%;
-  }
-  .css-pmxsec .exg6vvm15 .css-1yc2xoq {
-    display: inline-flex;
-    -webkit-box-align: center;
-    align-items: center;
-    -webkit-box-pack: center;
-    justify-content: center;
-    font-weight: 400;
-    padding: 0.25rem 0.75rem;
-    border-radius: 0.25rem;
-    margin: 0px;
-    line-height: 1.6;
-    color: inherit;
-    width: auto;
-    user-select: none;
-    background-color: rgb(76, 76, 82);
-    border: 1px solid rgba(250, 250, 250, 0.2);
-    margin-left: -11%;
-    margin-top: -16%;
-  }
-[id="MainMenu"]{
+}
+.css-pmxsec .exg6vvm15 .css-1yc2xoq {
+  display: inline-flex;
+  -webkit-box-align: center;
+  align-items: center;
+  -webkit-box-pack: center;
+  justify-content: center;
+  font-weight: 400;
+  padding: 0.25rem 0.75rem;
+  border-radius: 0.25rem;
+  margin: 0px;
+  line-height: 1.6;
+  color: inherit;
+  width: auto;
+  user-select: none;
+  background-color: rgb(76, 76, 82);
+  border: 1px solid rgba(250, 250, 250, 0.2);
+  margin-left: -11%;
+  margin-top: -16%;
+}
+[id="MainMenu"] {
   display: none;
 }

@@ -4,10 +4,10 @@ import scipy.io
 import numpy as np
 import librosa
 import librosa.display
-import os
 import sampling_studio_functions as functions
 
 # ---------------------- Elements styling -------------------------------- #
+
 with open('style.css') as f:
     st.markdown(f'<style>{f.read()}</style>', unsafe_allow_html=True)
 
@@ -16,17 +16,17 @@ file_as_array = None
 # ---------------------- Sidebar Elements -------------------------------- #
 
 # # Browsing a file
-label_col, Button_col = st.sidebar.columns(2)
+label_col, browse_button_col = st.sidebar.columns(2)
 with label_col:
     st.markdown("## Upload Signal")
-with Button_col:
+with browse_button_col:
     file = st.file_uploader(
         "", type="wav", accept_multiple_files=False)
 
 if file is not None:
     file_wav = librosa.load(file)
     file_as_array = np.asarray(file_wav[0])[:1000]
-    functions.set_signal_time(file_wav[1])
+    functions.setSignalTime(file_wav[1])
 else:
     functions.reset()
 
@@ -57,7 +57,7 @@ with signal_frequency_slider_col:
 
 with signal_amplitude_slider_col:
     signal_amplitude_slider = st.slider(
-        'Amplitude', 0.0, 1.0, 0.0, 0.01, format="%f")
+        'Amplitude', 0.1, 1.0, 0.1, 0.01, format="%f")
 
 signal_phase_slider = st.sidebar.slider(
     'Phase', 0.0, 2.0, 0.0, 0.1, format="%fπ")
@@ -79,6 +79,8 @@ if len(selected_signal_split) != 1:
     amplitude_slider = float(selected_signal_split[1])
     frequency_slider = float(selected_signal_split[4])
     phase_slider = float(selected_signal_split[7])
+
+# ------------------------------------------------------------------------ #
 
 # # Remove and clear signals from selectbox
 remove_button_col, clear_button_col = st.sidebar.columns(2)
@@ -112,16 +114,14 @@ else:
     sampling_rate = st.sidebar.slider(
         'Fs', max(1.5, ceil(functions.f_max*0.5)*1.0), 5.0*functions.f_max, 2.0*float(functions.f_max), 0.5, format="%f")
 
-# ------------------------------------------------------------------------ #
 
 # ----------------------- Main Window Elements --------------------------- #
 
 website_title = '<p class="page_titel", style="font-family:Arial">Sampling Studio</p>'
 st.markdown(website_title, unsafe_allow_html=True)
 # ------------------------------------------------------------------------ #
-functions.generate_sinusoidal(
-    signal_amplitude_slider, signal_frequancy_slider, signal_phase_slider)
-# st.write("""### Reconstructed Signal""")
+
+functions.generate_sinusoidal(signal_amplitude_slider, signal_frequancy_slider, signal_phase_slider)
 functions.generateResultedSignal(noise_flag, file_as_array, SNR_slider_value)
 fig, Reconstructed_signal = functions.renderSampledSignal(
     sampling_rate, normalized_sample_flag)
