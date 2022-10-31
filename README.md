@@ -36,43 +36,26 @@ To start deployment
   streamlit run streamlit_app.py
 ```
 
-
-
-
 ## 🖌️ Design
 
-![main widow](./images/images/custom%20theme.png)
+![main widow](./images/mainwndow2.png)
 * **side bar**
 
-| Sidebar up | sidebar buttom |
-|--|--|
-|<img  src="./images/images/sidebar1.png"  alt="DSP - sidebar1"  height="400"  align="center"/>|<img  src="./images/images/sidenar2.png"  alt="DSP- Sidebar2"  height="400"  align="center"/>|
-
- * **Themes**
- 
-| Light Mood | Dark Mood |
-|--|--|
-|<img  src="./images/images/light.png"  alt="DSP - sidebar1"  height="400"  align="center"/>|<img  src="./images/images/main.png"  alt="DSP- Sidebar2"  height="400"  align="center"/>|
-
+<img  src="./images/images/newSideBar.png"  alt="DSP - sidebar1"  height="400"  />
 
 ## Features
-| upload or generate signal | signal or remove signal |
-|--|--|
-|<img  src="./images/images/upload.png"  alt="DSP - upload"  height="400"  align="center"/>|<img  src="./images/images/add.png"  alt="DSP- AddOrRemove"  height="400"  align="center"/>|
+* **Sampling**
 
-| Add noise using SNR |
-|----|
-|<img  src="./images/images/noise.png"  alt="DSP - SNR"  height="400"  align="center"/>|
+![sampling](./images/sampling.png)
 
-| Sampling signal and interpolate using Sinc interpolation |
-|----|
-|<img  src="./images/images/sample.png"  alt="DSP - Sample"  height="400"  align="center"/>|
+* **Add signal**
+![add signal](./images/addsignal%20new.png)
 
-| Download Sufnal as CSV |
-|----|
-|<img  src="./images/images/download.png"  alt="DSP - Download"  height="400"  align="center"/>|
+* **Add noise**
+![Add noise](./images/newNoise.png)
 
- 
+* **Download your signal**
+![Add noise](./images/newDownload.png)
 
 
 ## 🔗 Authors
