@@ -59,19 +59,19 @@ To start deployment
 
 
 ## 🔗 Authors
-- Abram Gad. sec(1)  BN(1)
+- Abram Gad
 -  [@abram1111](https://github.com/Abram1111)
 [![linkedin](https://img.shields.io/badge/linkedin-0A66C2?style=for-the-badge&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/abram-gad-hanna/)
 
-- Esraa Ali. sec(1)  BN(12)
+- Esraa Ali
 - [@Esraa-alii](https://github.com/Esraa-alii)
 [![linkedin](https://img.shields.io/badge/linkedin-0A66C2?style=for-the-badge&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/esraa-ali-2754a61b0/)
 
-- Dina Khaled  sec(1)  BN(31)
+- Dina Khaled
 - [@dina-khalid](https://github.com/dina-khalid)
 [![linkedin](https://img.shields.io/badge/linkedin-0A66C2?style=for-the-badge&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/dina-salama-5758101b4/)
 
-- Sherif Ahmed  sec(1) BN(47)
+- Sherif Ahmed
 - [@Sherif-2001](https://github.com/Sherif-2001)
 [![linkedin](https://img.shields.io/badge/linkedin-0A66C2?style=for-the-badge&logo=linkedin&logoColor=white)](https://www.linkedin.com/mwlite/in/sherif-ahmed-elsayed)
 
